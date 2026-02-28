@@ -1,0 +1,17 @@
+{
+  "Rules": [
+    {
+      "Id": "TransitionAndDelete",
+      "Status": "Enabled",
+      "Transitions": [
+        {
+          "Days": 30,
+          "StorageClass": "STANDARD_IA"
+        }
+      ],
+      "Expiration": {
+        "Days": 730
+      }
+    }
+  ]
+}

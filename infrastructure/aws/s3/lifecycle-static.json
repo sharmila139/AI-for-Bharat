@@ -1,0 +1,18 @@
+{
+  "Rules": [
+    {
+      "Id": "TransitionToIA",
+      "Status": "Enabled",
+      "Transitions": [
+        {
+          "Days": 90,
+          "StorageClass": "STANDARD_IA"
+        },
+        {
+          "Days": 365,
+          "StorageClass": "GLACIER"
+        }
+      ]
+    }
+  ]
+}

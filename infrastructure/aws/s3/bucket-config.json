@@ -1,0 +1,71 @@
+{
+  "buckets": [
+    {
+      "name": "ruralconnect-static-assets",
+      "purpose": "Static assets (images, videos, documents)",
+      "versioning": true,
+      "encryption": "AES256",
+      "publicAccess": false,
+      "lifecycle": {
+        "transitionToIA": 90,
+        "transitionToGlacier": 365
+      },
+      "cors": {
+        "allowedOrigins": ["*"],
+        "allowedMethods": ["GET", "HEAD"],
+        "allowedHeaders": ["*"],
+        "maxAgeSeconds": 3600
+      }
+    },
+    {
+      "name": "ruralconnect-user-uploads",
+      "purpose": "User uploaded content (photos, documents)",
+      "versioning": false,
+      "encryption": "AES256",
+      "publicAccess": false,
+      "lifecycle": {
+        "transitionToIA": 30,
+        "deleteAfter": 730
+      },
+      "cors": {
+        "allowedOrigins": ["*"],
+        "allowedMethods": ["GET", "PUT", "POST", "DELETE"],
+        "allowedHeaders": ["*"],
+        "maxAgeSeconds": 3600
+      }
+    },
+    {
+      "name": "ruralconnect-backups",
+      "purpose": "Database and system backups",
+      "versioning": true,
+      "encryption": "AES256",
+      "publicAccess": false,
+      "lifecycle": {
+        "transitionToGlacier": 30,
+        "deleteAfter": 2555
+      }
+    },
+    {
+      "name": "ruralconnect-ml-models",
+      "purpose": "ML model artifacts and checkpoints",
+      "versioning": true,
+      "encryption": "AES256",
+      "publicAccess": false,
+      "lifecycle": {
+        "transitionToIA": 60
+      }
+    },
+    {
+      "name": "ruralconnect-logs",
+      "purpose": "Application and access logs",
+      "versioning": false,
+      "encryption": "AES256",
+      "publicAccess": false,
+      "lifecycle": {
+        "transitionToIA": 30,
+        "transitionToGlacier": 90,
+        "deleteAfter": 365
+      }
+    }
+  ]
+}

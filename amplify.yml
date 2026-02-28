@@ -1,0 +1,30 @@
+version: 1
+applications:
+  - appRoot: packages/mobile
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - yarn install --frozen-lockfile
+            - echo "Installing dependencies..."
+        build:
+          commands:
+            - echo "Building React Native app..."
+            - yarn build
+            - echo "Build complete"
+      artifacts:
+        baseDirectory: dist
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - .expo/**/*
+    backend:
+      phases:
+        build:
+          commands:
+            - echo "Backend build phase"
+            - cd ../../packages/backend
+            - yarn install --frozen-lockfile
+            - yarn build

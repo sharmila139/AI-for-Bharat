@@ -1,0 +1,4 @@
+# file: /Users/sarath/Documents/MINE/AI-for-Bharat/packages/ml-services/common/confidence_validator.py
+# hypothesis_version: 6.151.9
+
+[0.0, 0.6, 0.75, 0.82, 0.85, 0.87, 0.95, 1.0, '=', 'Statistics:', '__main__', 'auto_accept_rate', 'auto_accepted', 'avg_confidence', 'confidence', 'confidence_threshold', 'count', 'manual_review', 'max_confidence', 'meets_threshold', 'message', 'min_confidence', 'rejected', 'status', 'threshold', 'validation_message', 'validation_status']

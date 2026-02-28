@@ -1,0 +1,33 @@
+{
+  "name": "ruralconnect-ai",
+  "version": "1.0.0",
+  "description": "AI-powered mobile application empowering rural communities in India",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "mobile": "yarn workspace @ruralconnect/mobile start",
+    "backend": "yarn workspace @ruralconnect/backend dev",
+    "ml": "cd packages/ml-services && python -m uvicorn main:app --reload",
+    "test": "yarn workspaces run test",
+    "lint": "yarn workspaces run lint",
+    "build": "yarn workspaces run build"
+  },
+  "keywords": [
+    "rural",
+    "agriculture",
+    "healthcare",
+    "education",
+    "infrastructure",
+    "ai",
+    "aws",
+    "bedrock"
+  ],
+  "author": "RuralConnect AI Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.0"
+  }
+}
