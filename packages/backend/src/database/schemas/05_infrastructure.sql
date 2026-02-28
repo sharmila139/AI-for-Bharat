@@ -479,6 +479,31 @@ CREATE TRIGGER check_sla_on_update
     EXECUTE FUNCTION check_grievance_sla();
 
 -- ============================================================================
+-- GRIEVANCE VERIFICATION VOTES TABLE
+-- ============================================================================
+
+CREATE TABLE grievance_verification_votes (
+    vote_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    grievance_id UUID NOT NULL REFERENCES grievances(grievance_id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    
+    -- Vote Information
+    vote_type VARCHAR(10) CHECK (vote_type IN ('yes', 'no')),
+    comment TEXT,
+    photos TEXT[],
+    
+    -- Timestamps
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    UNIQUE(grievance_id, user_id) -- One vote per user per grievance
+);
+
+-- Indexes for grievance_verification_votes
+CREATE INDEX idx_verification_votes_grievance ON grievance_verification_votes(grievance_id);
+CREATE INDEX idx_verification_votes_user ON grievance_verification_votes(user_id);
+CREATE INDEX idx_verification_votes_created ON grievance_verification_votes(created_at);
+
+-- ============================================================================
 -- VIEWS
 -- ============================================================================
 
@@ -517,6 +542,7 @@ WHERE status IN ('approved', 'in_progress');
 
 COMMENT ON TABLE grievances IS 'Citizen grievances with AI classification and tracking';
 COMMENT ON TABLE grievance_updates IS 'Timeline of grievance status updates';
+COMMENT ON TABLE grievance_verification_votes IS 'Community verification votes for resolved grievances';
 COMMENT ON TABLE polls IS 'Community opinion polls and surveys';
 COMMENT ON TABLE poll_votes IS 'Anonymous poll votes with demographics';
 COMMENT ON TABLE infrastructure_projects IS 'Infrastructure development projects';

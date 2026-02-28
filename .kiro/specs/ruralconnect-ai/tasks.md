@@ -299,12 +299,12 @@ This task list provides a comprehensive implementation plan for building RuralCo
 - [x] 20.2 Implement AI image classification for category detection
 - [x] 20.3 Create GPS location extraction from photo metadata
 - [x] 20.4 Implement duplicate detection with spatial clustering
-- [ ] 20.5 Create unique ticket number generation
-- [ ] 20.6 Implement authority assignment based on category and location
-- [ ] 20.7 Create severity level classification
-- [ ] 20.8 Implement SLA deadline calculation and tracking
-- [ ] 20.9 Create anonymous reporting system
-- [ ] 20.10 Implement community verification workflow
+- [x] 20.5 Create unique ticket number generation
+- [x] 20.6 Implement authority assignment based on category and location
+- [x] 20.7 Create severity level classification
+- [x] 20.8 Implement SLA deadline calculation and tracking
+- [x] 20.9 Create anonymous reporting system
+- [x] 20.10 Implement community verification workflow
 - [ ] 20.11 Build grievance reporting UI with photo capture
 - [ ] 20.12 Write property test for duplicate grievance detection (Property 28)
 - [ ] 20.13 Write property test for unique ticket generation (Property 29)
