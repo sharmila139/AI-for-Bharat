@@ -6,3 +6,4 @@
 export { CropRecommendationScreen } from './CropRecommendationScreen';
 export { SoilHealthCardOCRScreen } from './SoilHealthCardOCRScreen';
 export { SoilAnalysisScreen } from './SoilAnalysisScreen';
+export { WeatherDashboardScreen } from './WeatherDashboardScreen';

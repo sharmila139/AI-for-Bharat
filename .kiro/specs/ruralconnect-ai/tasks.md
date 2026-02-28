@@ -175,31 +175,31 @@ This task list provides a comprehensive implementation plan for building RuralCo
 
 ### 13. Weather Intelligence and Alerts
 
-- [ ] 13.1 Integrate IMD API and OpenWeatherMap for weather data
-- [~] 13.2 Implement hourly updates and data caching
-- [~] 13.3 Create weather alert generation system with thresholds
-- [~] 13.4 Implement multi-channel notification delivery (push, SMS, voice)
-- [~] 13.5 Create crop-specific advisory generator
-- [~] 13.6 Implement frost alert system with 24-hour lead time
-- [~] 13.7 Create heavy rain alert with drainage recommendations
-- [~] 13.8 Implement pest risk advisory based on humidity and temperature
-- [~] 13.9 Create crowd-sourced weather observation system
-- [~] 13.10 Build weather dashboard UI with forecasts and alerts
-- [ ] 13.11 Write property test for weather alert generation (Property 14)
+- [x] 13.1 Integrate IMD API and OpenWeatherMap for weather data
+- [x] 13.2 Implement hourly updates and data caching
+- [x] 13.3 Create weather alert generation system with thresholds
+- [x] 13.4 Implement multi-channel notification delivery (push, SMS, voice)
+- [x] 13.5 Create crop-specific advisory generator
+- [x] 13.6 Implement frost alert system with 24-hour lead time
+- [x] 13.7 Create heavy rain alert with drainage recommendations
+- [x] 13.8 Implement pest risk advisory based on humidity and temperature
+- [x] 13.9 Create crowd-sourced weather observation system
+- [x] 13.10 Build weather dashboard UI with forecasts and alerts
+- [x] 13.11 Write property test for weather alert generation (Property 14)
 
 ### 14. Sustainable Practices Knowledge Base
 
-- [ ] 14.1 Create knowledge base schema and content management system
-- [ ] 14.2 Populate database with 500+ articles on sustainable farming
-- [ ] 14.3 Implement natural language search with intent understanding
-- [ ] 14.4 Create multi-format content delivery (text, images, videos, audio)
-- [ ] 14.5 Implement evidence level classification system
-- [ ] 14.6 Create step-by-step implementation guides
-- [ ] 14.7 Implement community ratings and Q&A system
-- [ ] 14.8 Create verification workflow for agricultural officers
-- [ ] 14.9 Implement crop rotation plan generator
-- [ ] 14.10 Build knowledge base UI with search and filtering
-- [ ] 14.11 Write property test for evidence level completeness (Property 16)
+- [x] 14.1 Create knowledge base schema and content management system
+- [x] 14.2 Populate database with 500+ articles on sustainable farming
+- [x] 14.3 Implement natural language search with intent understanding
+- [x] 14.4 Create multi-format content delivery (text, images, videos, audio)
+- [x] 14.5 Implement evidence level classification system
+- [x] 14.6 Create step-by-step implementation guides
+- [x] 14.7 Implement community ratings and Q&A system
+- [x] 14.8 Create verification workflow for agricultural officers
+- [x] 14.9 Implement crop rotation plan generator
+- [x] 14.10 Build knowledge base UI with search and filtering
+- [x] 14.11 Write property test for evidence level completeness (Property 16)
 
 
 ---
@@ -208,20 +208,20 @@ This task list provides a comprehensive implementation plan for building RuralCo
 
 ### 15. AI First Aid Assistant
 
-- [ ] 15.1 Create symptom input system (voice, text, body map)
-- [ ] 15.2 Implement emergency category classification algorithm
-- [ ] 15.3 Create risk level calculation based on severity, duration, and age
-- [ ] 15.4 Implement critical risk response with emergency contacts
-- [ ] 15.5 Create step-by-step first aid instruction system
-- [ ] 15.6 Implement checkpoint and warning system
-- [ ] 15.7 Create red flag symptom detection
-- [ ] 15.8 Implement outcome feedback collection
-- [ ] 15.9 Create emergency contact management
-- [ ] 15.10 Cache 50+ first aid protocols for offline use
-- [ ] 15.11 Build first aid UI with visual guides
-- [ ] 15.12 Write property test for emergency category classification (Property 17)
-- [ ] 15.13 Write property test for risk level calculation (Property 18)
-- [ ] 15.14 Write property test for critical risk response (Property 19)
+- [~] 15.1 Create symptom input system (voice, text, body map)
+- [~] 15.2 Implement emergency category classification algorithm
+- [~] 15.3 Create risk level calculation based on severity, duration, and age
+- [~] 15.4 Implement critical risk response with emergency contacts
+- [~] 15.5 Create step-by-step first aid instruction system
+- [~] 15.6 Implement checkpoint and warning system
+- [~] 15.7 Create red flag symptom detection
+- [~] 15.8 Implement outcome feedback collection
+- [~] 15.9 Create emergency contact management
+- [~] 15.10 Cache 50+ first aid protocols for offline use
+- [~] 15.11 Build first aid UI with visual guides
+- [~] 15.12 Write property test for emergency category classification (Property 17)
+- [~] 15.13 Write property test for risk level calculation (Property 18)
+- [~] 15.14 Write property test for critical risk response (Property 19)
 
 ### 16. Natural Medicine Database
 
