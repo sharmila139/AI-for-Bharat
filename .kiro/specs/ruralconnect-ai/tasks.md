@@ -531,8 +531,8 @@ This task list provides a comprehensive implementation plan for building RuralCo
 - [x] 36.6 Implement poll results visualization
 - [x] 36.7 Create project dashboard with progress bars
 - [x] 36.8 Build project detail view with milestones
-- [~] 36.9 Implement transparency document viewer
-- [~] 36.10 Create civic engagement analytics display
+- [x] 36.9 Implement transparency document viewer
+- [x] 36.10 Create civic engagement analytics display
 
 
 ### 37. Cross-Module UI Components

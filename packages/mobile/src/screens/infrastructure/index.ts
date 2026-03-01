@@ -11,3 +11,4 @@ export { default as CommunityPollsScreen } from './CommunityPollsScreen';
 export { default as PollDetailScreen } from './PollDetailScreen';
 export { default as ProjectProgressScreen } from './ProjectProgressScreen';
 export { default as ProjectDetailScreen } from './ProjectDetailScreen';
+export { default as TransparencyDocumentViewer } from './TransparencyDocumentViewer';

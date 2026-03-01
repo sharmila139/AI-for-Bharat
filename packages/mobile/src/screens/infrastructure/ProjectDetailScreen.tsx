@@ -145,10 +145,9 @@ interface ProjectDetail {
 }
 
 export const ProjectDetailScreen: React.FC<ProjectDetailScreenProps> = ({
-  navigation,
   route,
 }) => {
-  const { projectId, projectName } = route.params;
+  const { projectId } = route.params;
 
   // State
   const [loading, setLoading] = useState(true);
@@ -239,7 +238,7 @@ export const ProjectDetailScreen: React.FC<ProjectDetailScreenProps> = ({
     setSelectedPhotoIndex(index);
   };
 
-  const formatCurrency = (amount: number, currency: string = 'INR'): string => {
+  const formatCurrency = (amount: number): string => {
     if (amount >= 10000000) {
       return `₹${(amount / 10000000).toFixed(2)} Cr`;
     } else if (amount >= 100000) {
@@ -448,14 +447,14 @@ export const ProjectDetailScreen: React.FC<ProjectDetailScreenProps> = ({
                 <View style={styles.budgetRow}>
                   <Text style={styles.budgetLabel}>Total Budget</Text>
                   <Text style={styles.budgetValue}>
-                    {formatCurrency(project.total_budget, project.budget_currency)}
+                    {formatCurrency(project.total_budget)}
                   </Text>
                 </View>
                 {project.amount_spent !== undefined && (
                   <View style={styles.budgetRow}>
                     <Text style={styles.budgetLabel}>Amount Spent</Text>
                     <Text style={[styles.budgetValue, { color: '#F44336' }]}>
-                      {formatCurrency(project.amount_spent, project.budget_currency)}
+                      {formatCurrency(project.amount_spent)}
                     </Text>
                   </View>
                 )}
@@ -463,7 +462,7 @@ export const ProjectDetailScreen: React.FC<ProjectDetailScreenProps> = ({
                   <View style={styles.budgetRow}>
                     <Text style={styles.budgetLabel}>Amount Remaining</Text>
                     <Text style={[styles.budgetValue, { color: '#4CAF50' }]}>
-                      {formatCurrency(project.amount_remaining, project.budget_currency)}
+                      {formatCurrency(project.amount_remaining)}
                     </Text>
                   </View>
                 )}

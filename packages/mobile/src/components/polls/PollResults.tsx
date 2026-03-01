@@ -17,7 +17,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 type PollType = 'single_choice' | 'multiple_choice' | 'ranked_choice' | 'budget_allocation';
 
 interface OptionResult {
-  option_id: string;
+  option_id?: string;
   option_text: string;
   vote_count: number;
   percentage: number;
@@ -81,7 +81,7 @@ export const PollResults: React.FC<PollResultsProps> = ({
   const renderBarChart = () => (
     <View style={styles.barChartContainer}>
       {sortedResults.map((result, index) => (
-        <View key={String(result.option_id)} style={styles.barChartRow}>
+        <View key={(result.option_id || `option-${index}`) as string} style={styles.barChartRow}>
           <View style={styles.barChartLabel}>
             <Text style={styles.barChartLabelText} numberOfLines={2}>
               {result.option_text}
@@ -138,8 +138,8 @@ export const PollResults: React.FC<PollResultsProps> = ({
       <View style={styles.pieChartContainer}>
         {/* Simplified pie chart representation using colored boxes */}
         <View style={styles.pieChartLegend}>
-          {segments.map((segment) => (
-            <View key={String(segment.option_id)} style={styles.pieChartLegendItem}>
+          {segments.map((segment, idx) => (
+            <View key={(segment.option_id || `segment-${idx}`) as string} style={styles.pieChartLegendItem}>
               <View
                 style={[
                   styles.pieChartLegendColor,
@@ -240,7 +240,7 @@ export const PollResults: React.FC<PollResultsProps> = ({
   };
 
   const renderResultBar = (result: OptionResult, index: number) => (
-    <View key={String(result.option_id)} style={styles.resultCard}>
+    <View key={(result.option_id || `result-${index}`) as string} style={styles.resultCard}>
       <View style={styles.resultHeader}>
         <View style={styles.resultHeaderLeft}>
           <View

@@ -115,7 +115,6 @@ export const ProjectDashboardScreen: React.FC<ProjectDashboardScreenProps> = ({
   // State
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [searching, setSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [projects, setProjects] = useState<ProjectListItem[]>([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -166,7 +165,7 @@ export const ProjectDashboardScreen: React.FC<ProjectDashboardScreenProps> = ({
 
   const loadProjects = async () => {
     try {
-      setSearching(true);
+      setLoading(true);
 
       const params = new URLSearchParams();
       if (selectedStatus) params.append('status', selectedStatus);
@@ -210,7 +209,7 @@ export const ProjectDashboardScreen: React.FC<ProjectDashboardScreenProps> = ({
       console.error('Error loading projects:', err);
       setError(err.message || 'Failed to load projects');
     } finally {
-      setSearching(false);
+      setLoading(false);
       setRefreshing(false);
     }
   };
@@ -244,7 +243,7 @@ export const ProjectDashboardScreen: React.FC<ProjectDashboardScreenProps> = ({
     return count;
   };
 
-  const formatCurrency = (amount: number, currency: string = 'INR'): string => {
+  const formatCurrency = (amount: number): string => {
     if (amount >= 10000000) {
       return `₹${(amount / 10000000).toFixed(2)} Cr`;
     } else if (amount >= 100000) {
@@ -367,7 +366,7 @@ export const ProjectDashboardScreen: React.FC<ProjectDashboardScreenProps> = ({
             <View style={styles.infoContent}>
               <Text style={styles.infoLabel}>Budget</Text>
               <Text style={styles.infoValue}>
-                {formatCurrency(item.total_budget, item.budget_currency)}
+                {formatCurrency(item.total_budget)}
               </Text>
             </View>
           </View>
