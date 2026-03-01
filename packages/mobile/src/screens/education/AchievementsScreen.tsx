@@ -102,7 +102,7 @@ export const AchievementsScreen: React.FC<AchievementsScreenProps> = ({
       if (!grouped[achievement.category]) {
         grouped[achievement.category] = [];
       }
-      grouped[achievement.category].push(achievement);
+      grouped[achievement.category]!.push(achievement);
     });
 
     return grouped;
