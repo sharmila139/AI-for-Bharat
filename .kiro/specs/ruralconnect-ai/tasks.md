@@ -225,35 +225,35 @@ This task list provides a comprehensive implementation plan for building RuralCo
 
 ### 16. Natural Medicine Database
 
-- [ ] 16.1 Create remedy database schema with multi-language names
-- [ ] 16.2 Populate database with 300+ natural remedies
-- [ ] 16.3 Implement remedy search with ranking by efficacy and success rate
-- [ ] 16.4 Create preparation method documentation system
-- [ ] 16.5 Implement age-specific dosage calculator
-- [ ] 16.6 Create safety information system (side effects, contraindications)
-- [ ] 16.7 Implement seasonal ingredient availability tracking
-- [ ] 16.8 Create efficacy rating and evidence level system
-- [ ] 16.9 Implement video and audio instruction delivery
-- [ ] 16.10 Create verification workflow for Ayurvedic doctors
-- [ ] 16.11 Build remedy search UI with filters
-- [ ] 16.12 Write property test for remedy search ranking (Property 20)
-- [ ] 16.13 Write property test for remedy safety information (Property 21)
+- [x] 16.1 Create remedy database schema with multi-language names
+- [x] 16.2 Populate database with 300+ natural remedies
+- [x] 16.3 Implement remedy search with ranking by efficacy and success rate
+- [x] 16.4 Create preparation method documentation system
+- [x] 16.5 Implement age-specific dosage calculator
+- [x] 16.6 Create safety information system (side effects, contraindications)
+- [x] 16.7 Implement seasonal ingredient availability tracking
+- [x] 16.8 Create efficacy rating and evidence level system
+- [x] 16.9 Implement video and audio instruction delivery
+- [x] 16.10 Create verification workflow for Ayurvedic doctors
+- [x] 16.11 Build remedy search UI with filters
+- [x] 16.12 Write property test for remedy search ranking (Property 20)
+- [x] 16.13 Write property test for remedy safety information (Property 21)
 
 ### 17. Lifestyle and Nutrition Tracking
 
-- [ ] 17.1 Create user health profile management
-- [ ] 17.2 Implement calorie and macronutrient calculator
-- [ ] 17.3 Create meal plan generator with local and seasonal foods
-- [ ] 17.4 Implement cost optimization for meal plans
-- [ ] 17.5 Create daily meal plan structure (5 meals)
-- [ ] 17.6 Implement nutrition information display
-- [ ] 17.7 Create occupation-based calorie adjustment
-- [ ] 17.8 Implement meal compliance tracking
-- [ ] 17.9 Create nutrient gap analysis
-- [ ] 17.10 Implement dietary restriction support
-- [ ] 17.11 Build nutrition tracking UI with meal plans
-- [ ] 17.12 Write property test for calorie requirement calculation (Property 22)
-- [ ] 17.13 Write property test for activity level calorie ranges (Property 23)
+- [x] 17.1 Create user health profile management
+- [x] 17.2 Implement calorie and macronutrient calculator
+- [x] 17.3 Create meal plan generator with local and seasonal foods
+- [x] 17.4 Implement cost optimization for meal plans
+- [x] 17.5 Create daily meal plan structure (5 meals)
+- [x] 17.6 Implement nutrition information display
+- [x] 17.7 Create occupation-based calorie adjustment
+- [x] 17.8 Implement meal compliance tracking
+- [x] 17.9 Create nutrient gap analysis
+- [x] 17.10 Implement dietary restriction support
+- [x] 17.11 Build nutrition tracking UI with meal plans
+- [x] 17.12 Write property test for calorie requirement calculation (Property 22)
+- [x] 17.13 Write property test for activity level calorie ranges (Property 23)
 
 
 ---
@@ -305,9 +305,9 @@ This task list provides a comprehensive implementation plan for building RuralCo
 - [x] 20.8 Implement SLA deadline calculation and tracking
 - [x] 20.9 Create anonymous reporting system
 - [x] 20.10 Implement community verification workflow
-- [ ] 20.11 Build grievance reporting UI with photo capture
-- [ ] 20.12 Write property test for duplicate grievance detection (Property 28)
-- [ ] 20.13 Write property test for unique ticket generation (Property 29)
+- [x] 20.11 Build grievance reporting UI with photo capture
+- [x] 20.12 Write property test for duplicate grievance detection (Property 28)
+- [x] 20.13 Write property test for unique ticket generation (Property 29)
 
 ### 21. Grievance Tracking and Transparency
 
