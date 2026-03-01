@@ -223,6 +223,74 @@ export const getUserGrievances = async (
 };
 
 /**
+ * Search and filter grievances
+ */
+export interface GrievanceSearchParams {
+  query?: string; // Search by ticket number, title, description
+  status?: GrievanceStatus;
+  category?: GrievanceCategory;
+  startDate?: string;
+  endDate?: string;
+  myGrievances?: boolean;
+  page?: number;
+  limit?: number;
+}
+
+export type GrievanceStatus = 
+  | 'submitted' 
+  | 'acknowledged' 
+  | 'in_progress' 
+  | 'resolved' 
+  | 'closed' 
+  | 'rejected';
+
+export interface GrievanceListItem {
+  grievanceId: string;
+  ticketNumber: string;
+  title: string;
+  description: string;
+  category: GrievanceCategory;
+  status: GrievanceStatus;
+  severity: SeverityLevel;
+  location?: GPSLocation;
+  address?: string;
+  photos: string[];
+  createdAt: string;
+  updatedAt: string;
+  slaDeadline: string;
+  isOverdue: boolean;
+  daysOpen: number;
+  reportedBy?: string;
+  isAnonymous: boolean;
+}
+
+export interface GrievanceSearchResult {
+  items: GrievanceListItem[];
+  total: number;
+  page: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
+export const searchGrievances = async (
+  params: GrievanceSearchParams
+): Promise<GrievanceSearchResult> => {
+  const response = await api.get('/grievances/search', {
+    params: {
+      query: params.query,
+      status: params.status,
+      category: params.category,
+      start_date: params.startDate,
+      end_date: params.endDate,
+      my_grievances: params.myGrievances,
+      page: params.page || 1,
+      limit: params.limit || 20,
+    },
+  });
+  return response.data;
+};
+
+/**
  * Get grievance updates/timeline
  */
 export const getGrievanceUpdates = async (grievanceId: string) => {
@@ -281,6 +349,7 @@ export default {
   checkDuplicates,
   getGrievanceByTicket,
   getUserGrievances,
+  searchGrievances,
   getGrievanceUpdates,
   verifyResolution,
 };

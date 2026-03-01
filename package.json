@@ -8,6 +8,11 @@
   ],
   "scripts": {
     "mobile": "yarn workspace @ruralconnect/mobile start",
+    "mobile:android": "yarn workspace @ruralconnect/mobile android",
+    "mobile:ios": "yarn workspace @ruralconnect/mobile ios",
+    "mobile:test": "yarn workspace @ruralconnect/mobile test",
+    "mobile:lint": "yarn workspace @ruralconnect/mobile lint",
+    "mobile:type-check": "yarn workspace @ruralconnect/mobile type-check",
     "backend": "yarn workspace @ruralconnect/backend dev",
     "ml": "cd packages/ml-services && python -m uvicorn main:app --reload",
     "test": "yarn workspaces run test",

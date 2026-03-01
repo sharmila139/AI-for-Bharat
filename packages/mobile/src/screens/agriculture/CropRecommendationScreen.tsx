@@ -158,6 +158,8 @@ export const CropRecommendationScreen: React.FC = () => {
   );
 };
 
+export default CropRecommendationScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
