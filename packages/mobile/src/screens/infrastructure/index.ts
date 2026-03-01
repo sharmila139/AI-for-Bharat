@@ -3,4 +3,6 @@
  * Export all infrastructure-related screens
  */
 
-export { GrievanceReportScreen } from './GrievanceReportScreen';
+export { default as GrievanceReportScreen } from './GrievanceReportScreen';
+export { default as GrievanceTrackingScreen } from './GrievanceTrackingScreen';
+export { default as CommunityPollsScreen } from './CommunityPollsScreen';
