@@ -2,6 +2,48 @@
 
 React Native mobile application for RuralConnect AI, empowering rural communities through AI-driven insights.
 
+## 🚀 Quick Start: Build Android APK
+
+**All configuration is ready!** Just 2 steps needed:
+
+1. **Create asset files** (icon, splash screen)
+2. **Configure EAS** (one-time setup)
+
+Then build your APK:
+```bash
+eas build --platform android --profile preview
+```
+
+### 📖 Build Documentation
+
+- **[QUICK_START_BUILD.md](QUICK_START_BUILD.md)** - Fast-track guide (START HERE)
+- **[BUILD_GUIDE.md](BUILD_GUIDE.md)** - Comprehensive instructions
+- **[BUILD_READY_SUMMARY.md](../../BUILD_READY_SUMMARY.md)** - What's been fixed
+
+### 🛠️ What Was Fixed
+
+✅ Created `eas.json` with build configurations
+✅ Updated `app.json` with complete Expo config  
+✅ Added missing Expo dependencies
+✅ Added build scripts
+✅ Verified all configurations
+
+### ⚡ Quick Build Commands
+
+```bash
+# 1. Create assets (or use your own)
+node create-placeholder-assets.js
+
+# 2. Configure EAS (first time only)
+eas login
+eas build:configure
+
+# 3. Build APK
+eas build --platform android --profile preview
+```
+
+---
+
 ## Features
 
 - **Offline-First Architecture**: Core features work without internet connectivity

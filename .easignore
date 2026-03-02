@@ -1,0 +1,5 @@
+# EAS Build ignore file for monorepo
+# Exclude Yarn configuration to force npm usage
+
+.yarnrc.yml
+.yarn/

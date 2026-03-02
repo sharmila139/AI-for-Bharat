@@ -1,48 +1,31 @@
 const path = require('path');
-const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
+const { getDefaultConfig } = require('expo/metro-config');
 
 /**
- * Metro configuration for monorepo setup
- * https://facebook.github.io/metro/docs/configuration
+ * Metro configuration for Expo + monorepo setup
+ * https://docs.expo.dev/guides/customizing-metro/
  *
- * @type {import('metro-config').MetroConfig}
+ * @type {import('expo/metro-config').MetroConfig}
  */
 
 // Get the project root (monorepo root)
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '../..');
 
-const config = {
-  // Watch all files in the monorepo
-  watchFolders: [workspaceRoot],
+const config = getDefaultConfig(projectRoot);
 
-  resolver: {
-    // Enable symlinks for yarn workspaces
-    nodeModulesPaths: [
-      path.resolve(projectRoot, 'node_modules'),
-      path.resolve(workspaceRoot, 'node_modules'),
-    ],
+// Watch all files in the monorepo
+config.watchFolders = [workspaceRoot];
 
-    // Support for shared packages in monorepo
-    extraNodeModules: {
-      '@ruralconnect/shared': path.resolve(workspaceRoot, 'packages/shared'),
-    },
+// Enable symlinks for yarn workspaces
+config.resolver.nodeModulesPaths = [
+  path.resolve(projectRoot, 'node_modules'),
+  path.resolve(workspaceRoot, 'node_modules'),
+];
 
-    // Asset extensions
-    assetExts: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ttf', 'otf', 'woff', 'woff2'],
-
-    // Source extensions
-    sourceExts: ['js', 'jsx', 'ts', 'tsx', 'json'],
-  },
-
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: true,
-      },
-    }),
-  },
+// Support for shared packages in monorepo
+config.resolver.extraNodeModules = {
+  '@ruralconnect/shared': path.resolve(workspaceRoot, 'packages/shared'),
 };
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+module.exports = config;
