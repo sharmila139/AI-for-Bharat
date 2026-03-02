@@ -29,10 +29,6 @@
     "aws",
     "bedrock"
   ],
-  "dependencies": {
-    "metro": "0.81.5",
-    "metro-runtime": "0.81.5"
-  },
   "author": "RuralConnect AI Team",
   "license": "MIT",
   "engines": {
