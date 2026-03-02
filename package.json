@@ -30,8 +30,8 @@
     "bedrock"
   ],
   "dependencies": {
-    "metro": "0.83.3",
-    "metro-runtime": "0.83.3"
+    "metro": "0.81.5",
+    "metro-runtime": "0.81.5"
   },
   "author": "RuralConnect AI Team",
   "license": "MIT",
