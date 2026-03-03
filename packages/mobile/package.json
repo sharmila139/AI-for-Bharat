@@ -26,8 +26,8 @@
     "axios": "^1.6.0",
     "expo": "~51.0.0",
     "expo-asset": "~10.0.6",
-    "expo-image-manipulator": "~12.0.5",
-    "expo-image-picker": "~15.1.0",
+    "expo-image-manipulator": "12.0.5",
+    "expo-image-picker": "15.1.0",
     "react": "18.2.0",
     "react-native": "0.74.5",
     "react-native-background-fetch": "^4.2.2",
@@ -61,12 +61,12 @@
   "resolutions": {
     "react": "18.2.0",
     "react-native": "0.74.5",
-    "expo-image-manipulator": "~12.0.5",
-    "expo-image-picker": "~15.1.0"
+    "expo-image-manipulator": "12.0.5",
+    "expo-image-picker": "15.1.0"
   },
   "overrides": {
-    "expo-image-manipulator": "~12.0.5",
-    "expo-image-picker": "~15.1.0"
+    "expo-image-manipulator": "12.0.5",
+    "expo-image-picker": "15.1.0"
   },
   "expo": {
     "install": {
