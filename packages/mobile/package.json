@@ -60,7 +60,13 @@
   },
   "resolutions": {
     "react": "18.2.0",
-    "react-native": "0.74.5"
+    "react-native": "0.74.5",
+    "expo-image-manipulator": "~12.0.5",
+    "expo-image-picker": "~15.1.0"
+  },
+  "overrides": {
+    "expo-image-manipulator": "~12.0.5",
+    "expo-image-picker": "~15.1.0"
   },
   "expo": {
     "install": {
