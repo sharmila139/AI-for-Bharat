@@ -1,0 +1,122 @@
+[
+  {
+    "id": "REM001",
+    "name": "Ginger Tea",
+    "localNames": {
+      "hi": "अदरक की चाय",
+      "ta": "இஞ்சி தேநீர்",
+      "te": "అల్లం టీ",
+      "bn": "আদা চা"
+    },
+    "condition": "Cold & Cough",
+    "efficacy": 92,
+    "preparation": "Boil 1-inch fresh ginger in 2 cups water for 10 minutes. Add honey and lemon if desired. Drink warm 2-3 times daily.",
+    "benefits": [
+      "Reduces inflammation",
+      "Soothes throat irritation",
+      "Boosts immunity",
+      "Relieves congestion"
+    ],
+    "contraindications": ["Blood thinners", "Gallstones"],
+    "ageRestrictions": "Safe for 2+ years",
+    "ingredients": ["Fresh ginger", "Water", "Honey (optional)", "Lemon (optional)"],
+    "duration": "3-5 days",
+    "evidenceLevel": "High"
+  },
+  {
+    "id": "REM002",
+    "name": "Turmeric Milk",
+    "localNames": {
+      "hi": "हल्दी दूध",
+      "ta": "மஞ்சள் பால்",
+      "te": "పసుపు పాలు",
+      "bn": "হলুদ দুধ"
+    },
+    "condition": "Joint Pain",
+    "efficacy": 88,
+    "preparation": "Mix 1 teaspoon turmeric powder in warm milk. Add a pinch of black pepper for better absorption. Drink before bedtime.",
+    "benefits": [
+      "Anti-inflammatory properties",
+      "Pain relief",
+      "Better sleep",
+      "Improves joint mobility"
+    ],
+    "contraindications": ["Gallbladder problems", "Bleeding disorders"],
+    "ageRestrictions": "Safe for all ages",
+    "ingredients": ["Turmeric powder", "Milk", "Black pepper", "Honey (optional)"],
+    "duration": "2-4 weeks for chronic pain",
+    "evidenceLevel": "High"
+  },
+  {
+    "id": "REM003",
+    "name": "Tulsi Leaves",
+    "localNames": {
+      "hi": "तुलसी के पत्ते",
+      "ta": "துளசி இலைகள்",
+      "te": "తులసి ఆకులు",
+      "bn": "তুলসী পাতা"
+    },
+    "condition": "Fever",
+    "efficacy": 85,
+    "preparation": "Boil 10-15 fresh tulsi leaves in water for 5 minutes. Strain and drink warm 3-4 times daily.",
+    "benefits": [
+      "Reduces fever naturally",
+      "Antibacterial properties",
+      "Boosts immunity",
+      "Relieves respiratory issues"
+    ],
+    "contraindications": ["Pregnancy", "Low blood sugar"],
+    "ageRestrictions": "Safe for 1+ years",
+    "ingredients": ["Fresh tulsi leaves", "Water"],
+    "duration": "Until fever subsides",
+    "evidenceLevel": "Medium"
+  },
+  {
+    "id": "REM004",
+    "name": "Honey and Lemon",
+    "localNames": {
+      "hi": "शहद और नींबू",
+      "ta": "தேன் மற்றும் எலுமிச்சை",
+      "te": "తేనె మరియు నిమ్మకాయ",
+      "bn": "মধু এবং লেবু"
+    },
+    "condition": "Sore Throat",
+    "efficacy": 90,
+    "preparation": "Mix 1 tablespoon honey with juice of half lemon in warm water. Gargle and drink slowly.",
+    "benefits": [
+      "Soothes throat",
+      "Antibacterial action",
+      "Vitamin C boost",
+      "Reduces cough"
+    ],
+    "contraindications": ["Diabetes (use sparingly)", "Infants under 1 year"],
+    "ageRestrictions": "Safe for 1+ years",
+    "ingredients": ["Honey", "Lemon", "Warm water"],
+    "duration": "3-5 days",
+    "evidenceLevel": "High"
+  },
+  {
+    "id": "REM005",
+    "name": "Neem Leaves",
+    "localNames": {
+      "hi": "नीम के पत्ते",
+      "ta": "வேப்பிலை",
+      "te": "వేప ఆకులు",
+      "bn": "নিম পাতা"
+    },
+    "condition": "Skin Infections",
+    "efficacy": 87,
+    "preparation": "Boil neem leaves in water. Use the cooled water to wash affected area 2-3 times daily.",
+    "benefits": [
+      "Antibacterial properties",
+      "Antifungal action",
+      "Reduces inflammation",
+      "Promotes healing"
+    ],
+    "contraindications": ["Pregnancy", "Infertility treatment"],
+    "ageRestrictions": "External use safe for all ages",
+    "ingredients": ["Fresh neem leaves", "Water"],
+    "duration": "1-2 weeks",
+    "evidenceLevel": "Medium"
+  }
+]

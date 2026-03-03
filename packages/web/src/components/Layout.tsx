@@ -1,4 +1,10 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import LanguageSelector from './LanguageSelector';
+import AIAssistant from './AIAssistant';
+import NotificationCenter from './NotificationCenter';
+import HelpCenter from './HelpCenter';
+import FloatingActions from './FloatingActions';
 import './Layout.css';
 
 interface LayoutProps {
@@ -7,6 +13,9 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   const navItems = [
     { path: '/', label: 'Home', icon: '🏠' },
@@ -36,15 +45,38 @@ export default function Layout({ children }: LayoutProps) {
               </Link>
             ))}
           </nav>
+          <div className="header-actions">
+            <LanguageSelector />
+          </div>
         </div>
       </header>
       <main className="main">{children}</main>
       <footer className="footer">
         <div className="footer-content">
           <p>&copy; 2024 RuralConnect AI - Empowering Rural Communities</p>
-          <p className="footer-subtitle">Powered by AWS Lambda + API Gateway</p>
+          <p className="footer-subtitle">Powered by AWS Lambda + API Gateway + Bedrock AI</p>
         </div>
       </footer>
+
+      {/* Cross-Module Components */}
+      <AIAssistant 
+        isOpen={showAIAssistant} 
+        onClose={() => setShowAIAssistant(false)} 
+      />
+      <NotificationCenter 
+        isOpen={showNotifications} 
+        onClose={() => setShowNotifications(false)} 
+      />
+      <HelpCenter 
+        isOpen={showHelp} 
+        onClose={() => setShowHelp(false)} 
+      />
+      <FloatingActions
+        onAIAssistantClick={() => setShowAIAssistant(true)}
+        onNotificationsClick={() => setShowNotifications(true)}
+        onHelpClick={() => setShowHelp(true)}
+        unreadNotifications={2}
+      />
     </div>
   );
 }

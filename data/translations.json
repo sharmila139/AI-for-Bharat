@@ -1,0 +1,574 @@
+{
+  "languages": [
+    {
+      "code": "en",
+      "name": "English",
+      "nativeName": "English",
+      "flag": "🇬🇧",
+      "rtl": false
+    },
+    {
+      "code": "hi",
+      "name": "Hindi",
+      "nativeName": "हिंदी",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "ta",
+      "name": "Tamil",
+      "nativeName": "தமிழ்",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "te",
+      "name": "Telugu",
+      "nativeName": "తెలుగు",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "bn",
+      "name": "Bengali",
+      "nativeName": "বাংলা",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "mr",
+      "name": "Marathi",
+      "nativeName": "मराठी",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "gu",
+      "name": "Gujarati",
+      "nativeName": "ગુજરાતી",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "kn",
+      "name": "Kannada",
+      "nativeName": "ಕನ್ನಡ",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "ml",
+      "name": "Malayalam",
+      "nativeName": "മലയാളം",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "pa",
+      "name": "Punjabi",
+      "nativeName": "ਪੰਜਾਬੀ",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "or",
+      "name": "Odia",
+      "nativeName": "ଓଡ଼ିଆ",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "as",
+      "name": "Assamese",
+      "nativeName": "অসমীয়া",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "ur",
+      "name": "Urdu",
+      "nativeName": "اردو",
+      "flag": "🇮🇳",
+      "rtl": true
+    },
+    {
+      "code": "sa",
+      "name": "Sanskrit",
+      "nativeName": "संस्कृतम्",
+      "flag": "🇮🇳",
+      "rtl": false
+    },
+    {
+      "code": "ks",
+      "name": "Kashmiri",
+      "nativeName": "कॉशुर",
+      "flag": "🇮🇳",
+      "rtl": false
+    }
+  ],
+  "translations": {
+    "en": {
+      "common": {
+        "welcome": "Welcome",
+        "home": "Home",
+        "agriculture": "Agriculture",
+        "health": "Health",
+        "education": "Education",
+        "infrastructure": "Infrastructure",
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "save": "Save",
+        "delete": "Delete",
+        "edit": "Edit",
+        "search": "Search",
+        "filter": "Filter",
+        "back": "Back",
+        "next": "Next",
+        "previous": "Previous",
+        "close": "Close"
+      },
+      "agriculture": {
+        "cropRecommendations": "Crop Recommendations",
+        "soilAnalysis": "Soil Analysis",
+        "weatherForecast": "Weather Forecast",
+        "marketPrices": "Market Prices",
+        "getSuggestions": "Get Suggestions",
+        "soilType": "Soil Type",
+        "season": "Season",
+        "location": "Location",
+        "suitability": "Suitability",
+        "expectedYield": "Expected Yield",
+        "waterRequirement": "Water Requirement"
+      },
+      "health": {
+        "symptomChecker": "Symptom Checker",
+        "naturalRemedies": "Natural Remedies",
+        "firstAid": "First Aid",
+        "enterSymptoms": "Enter your symptoms",
+        "checkSymptoms": "Check Symptoms",
+        "severity": "Severity",
+        "remedyName": "Remedy Name",
+        "preparation": "Preparation",
+        "benefits": "Benefits",
+        "contraindications": "Contraindications"
+      }
+    },
+    "hi": {
+      "common": {
+        "welcome": "स्वागत है",
+        "home": "होम",
+        "agriculture": "कृषि",
+        "health": "स्वास्थ्य",
+        "education": "शिक्षा",
+        "infrastructure": "बुनियादी ढांचा",
+        "loading": "लोड हो रहा है...",
+        "error": "त्रुटि",
+        "success": "सफलता",
+        "submit": "जमा करें",
+        "cancel": "रद्द करें",
+        "save": "सहेजें",
+        "delete": "हटाएं",
+        "edit": "संपादित करें",
+        "search": "खोजें",
+        "filter": "फ़िल्टर",
+        "back": "वापस",
+        "next": "अगला",
+        "previous": "पिछला",
+        "close": "बंद करें"
+      },
+      "agriculture": {
+        "cropRecommendations": "फसल सिफारिशें",
+        "soilAnalysis": "मिट्टी विश्लेषण",
+        "weatherForecast": "मौसम पूर्वानुमान",
+        "marketPrices": "बाजार मूल्य",
+        "getSuggestions": "सुझाव प्राप्त करें",
+        "soilType": "मिट्टी का प्रकार",
+        "season": "मौसम",
+        "location": "स्थान",
+        "suitability": "उपयुक्तता",
+        "expectedYield": "अपेक्षित उपज",
+        "waterRequirement": "पानी की आवश्यकता"
+      },
+      "health": {
+        "symptomChecker": "लक्षण जांचकर्ता",
+        "naturalRemedies": "प्राकृतिक उपचार",
+        "firstAid": "प्राथमिक चिकित्सा",
+        "enterSymptoms": "अपने लक्षण दर्ज करें",
+        "checkSymptoms": "लक्षण जांचें",
+        "severity": "गंभीरता",
+        "remedyName": "उपचार का नाम",
+        "preparation": "तैयारी",
+        "benefits": "लाभ",
+        "contraindications": "मतभेद"
+      }
+    },
+    "ta": {
+      "common": {
+        "welcome": "வரவேற்கிறோம்",
+        "home": "முகப்பு",
+        "agriculture": "விவசாயம்",
+        "health": "சுகாதாரம்",
+        "education": "கல்வி",
+        "infrastructure": "உள்கட்டமைப்பு",
+        "loading": "ஏற்றுகிறது...",
+        "error": "பிழை",
+        "success": "வெற்றி",
+        "submit": "சமர்ப்பிக்கவும்",
+        "cancel": "ரத்து செய்",
+        "save": "சேமி",
+        "delete": "நீக்கு",
+        "edit": "திருத்து",
+        "search": "தேடு",
+        "filter": "வடிகட்டி",
+        "back": "பின்",
+        "next": "அடுத்து",
+        "previous": "முந்தைய",
+        "close": "மூடு"
+      },
+      "agriculture": {
+        "cropRecommendations": "பயிர் பரிந்துரைகள்",
+        "soilAnalysis": "மண் பகுப்பாய்வு",
+        "weatherForecast": "வானிலை முன்னறிவிப்பு",
+        "marketPrices": "சந்தை விலைகள்",
+        "getSuggestions": "பரிந்துரைகளைப் பெறுங்கள்",
+        "soilType": "மண் வகை",
+        "season": "பருவம்",
+        "location": "இடம்",
+        "suitability": "பொருத்தம்",
+        "expectedYield": "எதிர்பார்க்கப்படும் விளைச்சல்",
+        "waterRequirement": "நீர் தேவை"
+      },
+      "health": {
+        "symptomChecker": "அறிகுறி சரிபார்ப்பு",
+        "naturalRemedies": "இயற்கை மருத்துவம்",
+        "firstAid": "முதலுதவி",
+        "enterSymptoms": "உங்கள் அறிகுறிகளை உள்ளிடவும்",
+        "checkSymptoms": "அறிகுறிகளைச் சரிபார்க்கவும்",
+        "severity": "தீவிரம்",
+        "remedyName": "மருந்து பெயர்",
+        "preparation": "தயாரிப்பு",
+        "benefits": "நன்மைகள்",
+        "contraindications": "எதிர்குறிப்புகள்"
+      }
+    },
+    "te": {
+      "common": {
+        "welcome": "స్వాగతం",
+        "home": "హోమ్",
+        "agriculture": "వ్యవసాయం",
+        "health": "ఆరోగ్యం",
+        "education": "విద్య",
+        "infrastructure": "మౌలిక సదుపాయాలు",
+        "loading": "లోడ్ అవుతోంది...",
+        "error": "లోపం",
+        "success": "విజయం",
+        "submit": "సమర్పించండి",
+        "cancel": "రద్దు చేయండి",
+        "save": "సేవ్ చేయండి",
+        "delete": "తొలగించండి",
+        "edit": "సవరించండి",
+        "search": "వెతకండి",
+        "filter": "ఫిల్టర్",
+        "back": "వెనుకకు",
+        "next": "తదుపరి",
+        "previous": "మునుపటి",
+        "close": "మూసివేయండి"
+      }
+    },
+    "bn": {
+      "common": {
+        "welcome": "স্বাগতম",
+        "home": "হোম",
+        "agriculture": "কৃষি",
+        "health": "স্বাস্থ্য",
+        "education": "শিক্ষা",
+        "infrastructure": "অবকাঠামো",
+        "loading": "লোড হচ্ছে...",
+        "error": "ত্রুটি",
+        "success": "সফলতা",
+        "submit": "জমা দিন",
+        "cancel": "বাতিল করুন",
+        "save": "সংরক্ষণ করুন",
+        "delete": "মুছুন",
+        "edit": "সম্পাদনা করুন",
+        "search": "অনুসন্ধান করুন",
+        "filter": "ফিল্টার",
+        "back": "পিছনে",
+        "next": "পরবর্তী",
+        "previous": "পূর্ববর্তী",
+        "close": "বন্ধ করুন"
+      }
+    },
+    "mr": {
+      "common": {
+        "welcome": "स्वागत आहे",
+        "home": "होम",
+        "agriculture": "शेती",
+        "health": "आरोग्य",
+        "education": "शिक्षण",
+        "infrastructure": "पायाभूत सुविधा",
+        "loading": "लोड होत आहे...",
+        "error": "त्रुटी",
+        "success": "यश",
+        "submit": "सबमिट करा",
+        "cancel": "रद्द करा",
+        "save": "जतन करा",
+        "delete": "हटवा",
+        "edit": "संपादित करा",
+        "search": "शोधा",
+        "filter": "फिल्टर",
+        "back": "मागे",
+        "next": "पुढे",
+        "previous": "मागील",
+        "close": "बंद करा"
+      }
+    },
+    "gu": {
+      "common": {
+        "welcome": "સ્વાગત છે",
+        "home": "હોમ",
+        "agriculture": "કૃષિ",
+        "health": "આરોગ્ય",
+        "education": "શિક્ષણ",
+        "infrastructure": "માળખાકીય સુવિધા",
+        "loading": "લોડ થઈ રહ્યું છે...",
+        "error": "ભૂલ",
+        "success": "સફળતા",
+        "submit": "સબમિટ કરો",
+        "cancel": "રદ કરો",
+        "save": "સાચવો",
+        "delete": "કાઢી નાખો",
+        "edit": "સંપાદિત કરો",
+        "search": "શોધો",
+        "filter": "ફિલ્ટર",
+        "back": "પાછળ",
+        "next": "આગળ",
+        "previous": "પહેલાં",
+        "close": "બંધ કરો"
+      }
+    },
+    "kn": {
+      "common": {
+        "welcome": "ಸ್ವಾಗತ",
+        "home": "ಹೋಮ್",
+        "agriculture": "ಕೃಷಿ",
+        "health": "ಆರೋಗ್ಯ",
+        "education": "ಶಿಕ್ಷಣ",
+        "infrastructure": "ಮೂಲಸೌಕರ್ಯ",
+        "loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+        "error": "ದೋಷ",
+        "success": "ಯಶಸ್ಸು",
+        "submit": "ಸಲ್ಲಿಸಿ",
+        "cancel": "ರದ್ದುಮಾಡಿ",
+        "save": "ಉಳಿಸಿ",
+        "delete": "ಅಳಿಸಿ",
+        "edit": "ಸಂಪಾದಿಸಿ",
+        "search": "ಹುಡುಕಿ",
+        "filter": "ಫಿಲ್ಟರ್",
+        "back": "ಹಿಂದೆ",
+        "next": "ಮುಂದೆ",
+        "previous": "ಹಿಂದಿನ",
+        "close": "ಮುಚ್ಚಿ"
+      }
+    },
+    "ml": {
+      "common": {
+        "welcome": "സ്വാഗതം",
+        "home": "ഹോം",
+        "agriculture": "കൃഷി",
+        "health": "ആരോഗ്യം",
+        "education": "വിദ്യാഭ്യാസം",
+        "infrastructure": "അടിസ്ഥാന സൗകര്യങ്ങൾ",
+        "loading": "ലോഡ് ചെയ്യുന്നു...",
+        "error": "പിശക്",
+        "success": "വിജയം",
+        "submit": "സമർപ്പിക്കുക",
+        "cancel": "റദ്ദാക്കുക",
+        "save": "സംരക്ഷിക്കുക",
+        "delete": "ഇല്ലാതാക്കുക",
+        "edit": "എഡിറ്റ് ചെയ്യുക",
+        "search": "തിരയുക",
+        "filter": "ഫിൽട്ടർ",
+        "back": "പിന്നോട്ട്",
+        "next": "അടുത്തത്",
+        "previous": "മുമ്പത്തെ",
+        "close": "അടയ്ക്കുക"
+      }
+    },
+    "pa": {
+      "common": {
+        "welcome": "ਸੁਆਗਤ ਹੈ",
+        "home": "ਹੋਮ",
+        "agriculture": "ਖੇਤੀਬਾੜੀ",
+        "health": "ਸਿਹਤ",
+        "education": "ਸਿੱਖਿਆ",
+        "infrastructure": "ਬੁਨਿਆਦੀ ਢਾਂਚਾ",
+        "loading": "ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+        "error": "ਗਲਤੀ",
+        "success": "ਸਫਲਤਾ",
+        "submit": "ਜਮ੍ਹਾਂ ਕਰੋ",
+        "cancel": "ਰੱਦ ਕਰੋ",
+        "save": "ਸੁਰੱਖਿਅਤ ਕਰੋ",
+        "delete": "ਮਿਟਾਓ",
+        "edit": "ਸੰਪਾਦਿਤ ਕਰੋ",
+        "search": "ਖੋਜੋ",
+        "filter": "ਫਿਲਟਰ",
+        "back": "ਪਿੱਛੇ",
+        "next": "ਅਗਲਾ",
+        "previous": "ਪਿਛਲਾ",
+        "close": "ਬੰਦ ਕਰੋ"
+      }
+    },
+    "or": {
+      "common": {
+        "welcome": "ସ୍ୱାଗତ",
+        "home": "ହୋମ୍",
+        "agriculture": "କୃଷି",
+        "health": "ସ୍ୱାସ୍ଥ୍ୟ",
+        "education": "ଶିକ୍ଷା",
+        "infrastructure": "ଭିତ୍ତିଭୂମି",
+        "loading": "ଲୋଡ୍ ହେଉଛି...",
+        "error": "ତ୍ରୁଟି",
+        "success": "ସଫଳତା",
+        "submit": "ଦାଖଲ କରନ୍ତୁ",
+        "cancel": "ବାତିଲ୍ କରନ୍ତୁ",
+        "save": "ସଂରକ୍ଷଣ କରନ୍ତୁ",
+        "delete": "ବିଲୋପ କରନ୍ତୁ",
+        "edit": "ସମ୍ପାଦନା କରନ୍ତୁ",
+        "search": "ଖୋଜନ୍ତୁ",
+        "filter": "ଫିଲ୍ଟର୍",
+        "back": "ପଛକୁ",
+        "next": "ପରବର୍ତ୍ତୀ",
+        "previous": "ପୂର୍ବବର୍ତ୍ତୀ",
+        "close": "ବନ୍ଦ କରନ୍ତୁ"
+      }
+    },
+    "as": {
+      "common": {
+        "welcome": "স্বাগতম",
+        "home": "হোম",
+        "agriculture": "কৃষি",
+        "health": "স্বাস্থ্য",
+        "education": "শিক্ষা",
+        "infrastructure": "আন্তঃগাঁথনি",
+        "loading": "ল'ড হৈ আছে...",
+        "error": "ত্ৰুটি",
+        "success": "সফলতা",
+        "submit": "দাখিল কৰক",
+        "cancel": "বাতিল কৰক",
+        "save": "সংৰক্ষণ কৰক",
+        "delete": "মচক",
+        "edit": "সম্পাদনা কৰক",
+        "search": "সন্ধান কৰক",
+        "filter": "ফিল্টাৰ",
+        "back": "পিছলৈ",
+        "next": "পৰৱৰ্তী",
+        "previous": "পূৰ্বৱৰ্তী",
+        "close": "বন্ধ কৰক"
+      }
+    },
+    "ur": {
+      "common": {
+        "welcome": "خوش آمدید",
+        "home": "ہوم",
+        "agriculture": "زراعت",
+        "health": "صحت",
+        "education": "تعلیم",
+        "infrastructure": "بنیادی ڈھانچہ",
+        "loading": "لوڈ ہو رہا ہے...",
+        "error": "خرابی",
+        "success": "کامیابی",
+        "submit": "جمع کریں",
+        "cancel": "منسوخ کریں",
+        "save": "محفوظ کریں",
+        "delete": "حذف کریں",
+        "edit": "ترمیم کریں",
+        "search": "تلاش کریں",
+        "filter": "فلٹر",
+        "back": "واپس",
+        "next": "اگلا",
+        "previous": "پچھلا",
+        "close": "بند کریں"
+      }
+    },
+    "sa": {
+      "common": {
+        "welcome": "स्वागतम्",
+        "home": "गृहम्",
+        "agriculture": "कृषिः",
+        "health": "आरोग्यम्",
+        "education": "शिक्षा",
+        "infrastructure": "आधारभूतसंरचना",
+        "loading": "लोड् भवति...",
+        "error": "त्रुटिः",
+        "success": "सफलता",
+        "submit": "प्रस्तुतं करोतु",
+        "cancel": "निरस्तं करोतु",
+        "save": "रक्षतु",
+        "delete": "विलोपयतु",
+        "edit": "सम्पादयतु",
+        "search": "अन्वेषयतु",
+        "filter": "निस्यन्दकः",
+        "back": "पृष्ठतः",
+        "next": "अग्रिमम्",
+        "previous": "पूर्वम्",
+        "close": "बन्धयतु"
+      }
+    },
+    "ks": {
+      "common": {
+        "welcome": "स्वागत छु",
+        "home": "होम",
+        "agriculture": "खेती",
+        "health": "सेहत",
+        "education": "तालीम",
+        "infrastructure": "बुनियादी ढांचा",
+        "loading": "लोड गछु...",
+        "error": "गलती",
+        "success": "कामयाबी",
+        "submit": "जमा करिव",
+        "cancel": "रद्द करिव",
+        "save": "सेव करिव",
+        "delete": "डिलीट करिव",
+        "edit": "एडिट करिव",
+        "search": "तलाश करिव",
+        "filter": "फिल्टर",
+        "back": "वापस",
+        "next": "अगला",
+        "previous": "पिछला",
+        "close": "बंद करिव"
+      }
+    }
+  },
+  "dateFormats": {
+    "en": "MM/DD/YYYY",
+    "hi": "DD/MM/YYYY",
+    "ta": "DD/MM/YYYY",
+    "te": "DD/MM/YYYY",
+    "bn": "DD/MM/YYYY"
+  },
+  "currencyFormats": {
+    "en": "₹{amount}",
+    "hi": "₹{amount}",
+    "ta": "₹{amount}",
+    "te": "₹{amount}",
+    "bn": "₹{amount}"
+  },
+  "numberFormats": {
+    "en": {
+      "decimal": ".",
+      "thousand": ","
+    },
+    "hi": {
+      "decimal": ".",
+      "thousand": ","
+    },
+    "ta": {
+      "decimal": ".",
+      "thousand": ","
+    }
+  }
+}

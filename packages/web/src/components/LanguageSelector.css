@@ -1,0 +1,144 @@
+.language-selector {
+  position: relative;
+}
+
+.language-selector-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 0.9em;
+}
+
+.language-selector-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.language-flag {
+  font-size: 1.2em;
+}
+
+.language-name {
+  font-weight: 500;
+}
+
+.language-arrow {
+  font-size: 0.7em;
+  opacity: 0.7;
+}
+
+.language-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}
+
+.language-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 280px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: dropdownSlide 0.2s ease-out;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.language-dropdown-header {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.language-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.language-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: none;
+  background: white;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: left;
+}
+
+.language-item:hover {
+  background: #f9fafb;
+}
+
+.language-item.active {
+  background: #eff6ff;
+}
+
+.language-item-flag {
+  font-size: 1.5em;
+}
+
+.language-item-text {
+  flex: 1;
+}
+
+.language-item-native {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.language-item-english {
+  font-size: 0.85em;
+  color: #666;
+}
+
+.language-item-check {
+  color: #667eea;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+  .language-dropdown {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 70vh;
+  }
+
+  .language-list {
+    max-height: calc(70vh - 60px);
+  }
+}

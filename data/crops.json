@@ -1,0 +1,152 @@
+[
+  {
+    "id": "CROP001",
+    "name": "Rice",
+    "localNames": {
+      "hi": "चावल",
+      "ta": "அரிசி",
+      "te": "వరి",
+      "bn": "ধান"
+    },
+    "season": "Kharif",
+    "soilTypes": ["Clay", "Loam", "Clay-loam"],
+    "soilPH": "6.0-7.0",
+    "waterRequirement": "High",
+    "duration": "120-150 days",
+    "expectedYield": "4-5 tons/hectare",
+    "marketPrice": "₹2000-2500/quintal",
+    "investment": "₹25,000-30,000/hectare",
+    "profitMargin": "40-50%",
+    "climateRequirement": "Warm and humid",
+    "temperature": "20-35°C",
+    "rainfall": "100-200 cm",
+    "companionCrops": ["Legumes", "Vegetables"],
+    "risks": ["Blast disease", "Brown plant hopper", "Flooding"],
+    "governmentSchemes": ["PM-KISAN", "Crop Insurance"],
+    "suitabilityFactors": {
+      "clayLoamSoil": 95,
+      "highWaterAvailability": 90,
+      "warmClimate": 85
+    }
+  },
+  {
+    "id": "CROP002",
+    "name": "Wheat",
+    "localNames": {
+      "hi": "गेहूं",
+      "ta": "கோதுமை",
+      "te": "గోధుమ",
+      "bn": "গম"
+    },
+    "season": "Rabi",
+    "soilTypes": ["Loam", "Clay-loam", "Sandy-loam"],
+    "soilPH": "6.5-7.5",
+    "waterRequirement": "Medium",
+    "duration": "120-150 days",
+    "expectedYield": "3-4 tons/hectare",
+    "marketPrice": "₹1800-2200/quintal",
+    "investment": "₹20,000-25,000/hectare",
+    "profitMargin": "35-45%",
+    "climateRequirement": "Cool and dry",
+    "temperature": "10-25°C",
+    "rainfall": "50-75 cm",
+    "companionCrops": ["Mustard", "Chickpea"],
+    "risks": ["Rust disease", "Aphids", "Drought"],
+    "governmentSchemes": ["MSP", "Crop Insurance"],
+    "suitabilityFactors": {
+      "loamSoil": 90,
+      "moderateWater": 85,
+      "coolClimate": 88
+    }
+  },
+  {
+    "id": "CROP003",
+    "name": "Cotton",
+    "localNames": {
+      "hi": "कपास",
+      "ta": "பருத்தி",
+      "te": "పత్తి",
+      "bn": "তুলা"
+    },
+    "season": "Kharif",
+    "soilTypes": ["Black soil", "Alluvial", "Sandy-loam"],
+    "soilPH": "6.0-8.0",
+    "waterRequirement": "Medium",
+    "duration": "150-180 days",
+    "expectedYield": "15-20 quintals/hectare",
+    "marketPrice": "₹5500-6500/quintal",
+    "investment": "₹30,000-40,000/hectare",
+    "profitMargin": "50-60%",
+    "climateRequirement": "Warm with moderate rainfall",
+    "temperature": "21-30°C",
+    "rainfall": "50-100 cm",
+    "companionCrops": ["Groundnut", "Green gram"],
+    "risks": ["Bollworm", "Whitefly", "Wilt disease"],
+    "governmentSchemes": ["MSP", "Technology Mission on Cotton"],
+    "suitabilityFactors": {
+      "blackSoil": 95,
+      "warmClimate": 90,
+      "moderateRainfall": 85
+    }
+  },
+  {
+    "id": "CROP004",
+    "name": "Sugarcane",
+    "localNames": {
+      "hi": "गन्ना",
+      "ta": "கரும்பு",
+      "te": "చెరకు",
+      "bn": "আখ"
+    },
+    "season": "Year-round",
+    "soilTypes": ["Loam", "Clay-loam", "Alluvial"],
+    "soilPH": "6.5-7.5",
+    "waterRequirement": "Very High",
+    "duration": "10-12 months",
+    "expectedYield": "70-90 tons/hectare",
+    "marketPrice": "₹280-320/quintal",
+    "investment": "₹50,000-70,000/hectare",
+    "profitMargin": "45-55%",
+    "climateRequirement": "Tropical and subtropical",
+    "temperature": "20-35°C",
+    "rainfall": "75-150 cm",
+    "companionCrops": ["Potato", "Onion"],
+    "risks": ["Red rot", "Smut", "Borer insects"],
+    "governmentSchemes": ["FRP", "Sugar Development Fund"],
+    "suitabilityFactors": {
+      "alluvialSoil": 92,
+      "highWater": 95,
+      "tropicalClimate": 90
+    }
+  },
+  {
+    "id": "CROP005",
+    "name": "Maize",
+    "localNames": {
+      "hi": "मक्का",
+      "ta": "சோளம்",
+      "te": "మొక్కజొన్న",
+      "bn": "ভুট্টা"
+    },
+    "season": "Kharif & Rabi",
+    "soilTypes": ["Loam", "Sandy-loam", "Clay-loam"],
+    "soilPH": "5.5-7.5",
+    "waterRequirement": "Medium",
+    "duration": "80-110 days",
+    "expectedYield": "2.5-3.5 tons/hectare",
+    "marketPrice": "₹1600-2000/quintal",
+    "investment": "₹15,000-20,000/hectare",
+    "profitMargin": "40-50%",
+    "climateRequirement": "Warm with moderate rainfall",
+    "temperature": "18-32°C",
+    "rainfall": "50-100 cm",
+    "companionCrops": ["Beans", "Pumpkin"],
+    "risks": ["Fall armyworm", "Stem borer", "Blight"],
+    "governmentSchemes": ["MSP", "Crop Insurance"],
+    "suitabilityFactors": {
+      "loamSoil": 88,
+      "moderateWater": 85,
+      "warmClimate": 87
+    }
+  }
+]

@@ -119,3 +119,22 @@
     font-size: 1em;
   }
 }
+
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .header-content {
+    gap: 20px;
+  }
+  
+  .nav {
+    flex: 1;
+    justify-content: center;
+  }
+}
