@@ -5,6 +5,11 @@
 
 set -e
 
+# Use local AWS credentials if available
+if [ -f ".aws/env.sh" ]; then
+    source .aws/env.sh
+fi
+
 echo "🚀 RuralConnect AI - Complete AWS Deployment"
 echo "=============================================="
 echo ""
