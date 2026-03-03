@@ -70,7 +70,9 @@
   },
   "expo": {
     "install": {
-      "exclude": ["expo-location"]
+      "exclude": [
+        "expo-location"
+      ]
     }
   }
 }
