@@ -61,5 +61,10 @@
   "resolutions": {
     "react": "18.2.0",
     "react-native": "0.74.5"
+  },
+  "expo": {
+    "install": {
+      "exclude": ["expo-location"]
+    }
   }
 }
