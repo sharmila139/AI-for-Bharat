@@ -1,47 +1,27 @@
-# EAS Build ignore file
-# Files and directories to exclude from EAS builds
+# Ignore android directory - let EAS generate it fresh
+android/
 
-# Documentation
+# Ignore iOS directory
+ios/
+
+# Ignore build artifacts
+*.log
+*.lock
+node_modules/
+.expo/
+.expo-shared/
+
+# Ignore local env files
+.env.local
+.env.*.local
+
+# Ignore documentation
 *.md
-docs/
+!README.md
 
-# Tests
+# Ignore test files
 __tests__/
 **/*.test.ts
 **/*.test.tsx
 **/*.spec.ts
 **/*.spec.tsx
-jest.config.js
-jest.setup.js
-
-# Build artifacts
-android/build/
-android/app/build/
-ios/build/
-dist/
-build/
-
-# IDE
-.vscode/
-.idea/
-
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Temporary files
-.DS_Store
-*.swp
-*.swo
-*~
-
-# Yarn (if using npm)
-.yarn/
-.yarnrc.yml
-yarn.lock
-
-# Git
-.git/
-.gitignore
