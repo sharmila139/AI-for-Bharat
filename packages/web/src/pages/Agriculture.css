@@ -1,0 +1,156 @@
+.agriculture-page {
+  background: linear-gradient(to bottom, #f0fdf4 0%, #f5f5f5 300px);
+}
+
+.feature-box {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.feature-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.feature-box-icon {
+  font-size: 3em;
+  margin-bottom: 16px;
+}
+
+.feature-box h3 {
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.feature-box p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.recommendations {
+  border-top: 2px solid #f0f0f0;
+  padding-top: 30px;
+}
+
+.recommendation-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s;
+}
+
+.recommendation-card:hover {
+  border-color: #10b981;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+}
+
+.recommendation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.recommendation-header h4 {
+  font-size: 1.5em;
+  color: #10b981;
+  margin: 0;
+}
+
+.suitability-badge {
+  background: #10b981;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.recommendation-details {
+  margin-bottom: 20px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #666;
+}
+
+.detail-value {
+  color: #333;
+}
+
+.recommendation-reasons {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.recommendation-reasons strong {
+  display: block;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.recommendation-reasons ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.recommendation-reasons li {
+  margin-bottom: 8px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.info-section {
+  margin-top: 40px;
+}
+
+.info-section h2 {
+  font-size: 2em;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.info-card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info-card h3 {
+  font-size: 1.3em;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.info-card p {
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.info-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.info-card li {
+  margin-bottom: 8px;
+  color: #666;
+}
