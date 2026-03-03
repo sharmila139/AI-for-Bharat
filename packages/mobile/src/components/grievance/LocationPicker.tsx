@@ -1,19 +1,19 @@
 /**
  * Location Picker Component
  * Shows auto-extracted location from photo or allows manual selection
+ * NOTE: expo-location temporarily disabled for build
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  ActivityIndicator,
   Alert,
   TextInput,
 } from 'react-native';
-import * as Location from 'expo-location';
+// import * as Location from 'expo-location'; // Temporarily disabled
 import { GPSLocation } from '../../services/api/grievance-api';
 
 interface LocationPickerProps {
@@ -29,84 +29,17 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
   extractedFromPhoto = false,
   disabled = false,
 }) => {
-  const [loading, setLoading] = useState(false);
-  const [address, setAddress] = useState<string>('');
   const [showManualInput, setShowManualInput] = useState(false);
 
-  useEffect(() => {
-    if (location) {
-      reverseGeocode(location);
-    }
-  }, [location]);
-
   /**
-   * Request location permissions
-   */
-  const requestLocationPermission = async (): Promise<boolean> => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert(
-        'Permission Required',
-        'Location permission is required to get your current location. Please enable it in settings.'
-      );
-      return false;
-    }
-    return true;
-  };
-
-  /**
-   * Get current location
+   * Get current location - STUB
    */
   const getCurrentLocation = async () => {
-    const hasPermission = await requestLocationPermission();
-    if (!hasPermission) return;
-
-    setLoading(true);
-    try {
-      const result = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-      });
-
-      const newLocation: GPSLocation = {
-        latitude: result.coords.latitude,
-        longitude: result.coords.longitude,
-        accuracy: result.coords.accuracy || undefined,
-      };
-
-      onLocationChange(newLocation);
-    } catch (error) {
-      console.error('Error getting location:', error);
-      Alert.alert('Error', 'Failed to get current location. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /**
-   * Reverse geocode to get address
-   */
-  const reverseGeocode = async (loc: GPSLocation) => {
-    try {
-      const results = await Location.reverseGeocodeAsync({
-        latitude: loc.latitude,
-        longitude: loc.longitude,
-      });
-
-      if (results.length > 0) {
-        const result = results[0];
-        const parts = [
-          result.street,
-          result.district,
-          result.city,
-          result.region,
-          result.postalCode,
-        ].filter(Boolean);
-        setAddress(parts.join(', '));
-      }
-    } catch (error) {
-      console.error('Error reverse geocoding:', error);
-      setAddress('Location coordinates available');
-    }
+    Alert.alert(
+      'Location Feature',
+      'Location services are temporarily unavailable. Please enter coordinates manually.',
+      [{ text: 'OK', onPress: () => setShowManualInput(true) }]
+    );
   };
 
   /**
@@ -130,7 +63,6 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
           style: 'destructive',
           onPress: () => {
             onLocationChange(null);
-            setAddress('');
           },
         },
       ]
@@ -157,9 +89,6 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
                 <Text style={styles.extractedBadgeText}>📷 From Photo</Text>
               </View>
             )}
-            <Text style={styles.locationAddress}>
-              {address || 'Loading address...'}
-            </Text>
             <Text style={styles.locationCoords}>
               {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
             </Text>
@@ -186,7 +115,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
       <View style={styles.container}>
         <Text style={styles.title}>Location (Manual Entry)</Text>
         <Text style={styles.subtitle}>
-          Enter coordinates or use current location
+          Enter coordinates
         </Text>
         <View style={styles.manualInputContainer}>
           <TextInput
@@ -198,8 +127,8 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
               const lat = parseFloat(text);
               if (!isNaN(lat)) {
                 onLocationChange({
-                  ...location!,
                   latitude: lat,
+                  longitude: location?.longitude || 0,
                 });
               }
             }}
@@ -213,7 +142,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
               const lon = parseFloat(text);
               if (!isNaN(lon)) {
                 onLocationChange({
-                  ...location!,
+                  latitude: location?.latitude || 0,
                   longitude: lon,
                 });
               }
@@ -239,7 +168,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 
       {renderLocationInfo()}
 
-      {!location && !loading && (
+      {!location && (
         <View style={styles.actions}>
           <TouchableOpacity
             style={[styles.actionButton, styles.actionButtonPrimary]}
@@ -259,23 +188,6 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
             <Text style={styles.actionButtonText}>Enter Manually</Text>
           </TouchableOpacity>
         </View>
-      )}
-
-      {loading && (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="small" color="#2196F3" />
-          <Text style={styles.loadingText}>Getting location...</Text>
-        </View>
-      )}
-
-      {location && !extractedFromPhoto && (
-        <TouchableOpacity
-          style={styles.updateButton}
-          onPress={getCurrentLocation}
-          disabled={disabled || loading}
-        >
-          <Text style={styles.updateButtonText}>Update Location</Text>
-        </TouchableOpacity>
       )}
     </View>
   );
