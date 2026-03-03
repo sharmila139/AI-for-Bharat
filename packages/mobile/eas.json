@@ -6,7 +6,7 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "node": "22.11.0",
+      "node": "18.18.0",
       "android": {
         "gradleCommand": ":app:assembleDebug",
         "buildType": "apk",
@@ -18,7 +18,7 @@
     },
     "preview": {
       "distribution": "internal",
-      "node": "22.11.0",
+      "node": "18.18.0",
       "android": {
         "buildType": "apk",
         "withoutCredentials": false
@@ -28,7 +28,7 @@
       }
     },
     "production": {
-      "node": "22.11.0",
+      "node": "18.18.0",
       "android": {
         "buildType": "apk",
         "withoutCredentials": false
