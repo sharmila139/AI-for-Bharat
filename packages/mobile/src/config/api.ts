@@ -5,6 +5,7 @@
 
 import axios from 'axios';
 import { getAuthToken, refreshAccessToken } from '../services/auth/auth-service';
+import { MOCK_MODE, getMockResponse, MOCK_DELAY } from './mock-api';
 
 // API Base URL - Update this with your backend URL
 // For development: use your local IP address (not localhost)
@@ -12,6 +13,22 @@ import { getAuthToken, refreshAccessToken } from '../services/auth/auth-service'
 export const API_BASE_URL = __DEV__
   ? 'http://10.0.2.2:3000/api' // Android emulator
   : 'https://api.ruralconnect.app';
+
+// Mock API interceptor
+const mockApiCall = (config: any): Promise<any> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const mockData = getMockResponse(config.url || '');
+      resolve({
+        data: mockData,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+      });
+    }, MOCK_DELAY);
+  });
+};
 
 // Create axios instance with default config
 export const apiClient = axios.create({
@@ -25,6 +42,11 @@ export const apiClient = axios.create({
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   async (config) => {
+    // Use mock API if enabled
+    if (MOCK_MODE) {
+      return mockApiCall(config);
+    }
+
     const token = await getAuthToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
