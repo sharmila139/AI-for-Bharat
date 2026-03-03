@@ -1,10 +1,25 @@
 /**
  * Sync Queue Service
  * Manages offline operations with priority ordering
+ * NOTE: Stubbed implementation without Realm (in-memory only)
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import RealmDatabase, { OfflineOperation } from '../../database/realm-config';
+
+// Stub OfflineOperation interface
+export interface OfflineOperation {
+  _id: string;
+  operationType: 'create' | 'update' | 'delete';
+  entityType: string;
+  entityId: string;
+  data: string;
+  priority: number;
+  status: 'pending' | 'syncing' | 'synced' | 'failed';
+  retryCount: number;
+  createdAt: Date;
+  lastAttemptAt?: Date;
+  error?: string;
+}
 
 export interface QueueOperation {
   id: string;
@@ -44,6 +59,9 @@ const ENTITY_PRIORITY_MAP: Record<string, number> = {
   'analytics': SyncPriority.BACKGROUND
 };
 
+// In-memory storage (stub)
+const operationsStore: Map<string, OfflineOperation> = new Map();
+
 export class SyncQueue {
   private static maxRetries = 3;
   private static retryDelayMs = 5000; // 5 seconds
@@ -58,24 +76,19 @@ export class SyncQueue {
     data: any,
     customPriority?: number
   ): string {
-    const realm = RealmDatabase.getInstance();
     const operationId = uuidv4();
-    
-    // Determine priority
     const priority = customPriority || ENTITY_PRIORITY_MAP[entityType] || SyncPriority.MEDIUM;
 
-    realm.write(() => {
-      realm.create('OfflineOperation', {
-        _id: operationId,
-        operationType,
-        entityType,
-        entityId,
-        data: JSON.stringify(data),
-        priority,
-        status: 'pending',
-        retryCount: 0,
-        createdAt: new Date()
-      });
+    operationsStore.set(operationId, {
+      _id: operationId,
+      operationType,
+      entityType,
+      entityId,
+      data: JSON.stringify(data),
+      priority,
+      status: 'pending',
+      retryCount: 0,
+      createdAt: new Date()
     });
 
     return operationId;
@@ -85,24 +98,21 @@ export class SyncQueue {
    * Get pending operations sorted by priority
    */
   static getPendingOperations(): OfflineOperation[] {
-    const realm = RealmDatabase.getInstance();
-    const operations = realm.objects<OfflineOperation>('OfflineOperation')
-      .filtered('status = "pending" OR status = "failed"')
-      .sorted([['priority', true], ['createdAt', false]]); // High priority first, then oldest first
-
-    return Array.from(operations);
+    return Array.from(operationsStore.values())
+      .filter(op => op.status === 'pending' || op.status === 'failed')
+      .sort((a, b) => {
+        if (a.priority !== b.priority) return b.priority - a.priority;
+        return b.createdAt.getTime() - a.createdAt.getTime();
+      });
   }
 
   /**
    * Get operations by entity
    */
   static getOperationsByEntity(entityType: string, entityId: string): OfflineOperation[] {
-    const realm = RealmDatabase.getInstance();
-    const operations = realm.objects<OfflineOperation>('OfflineOperation')
-      .filtered('entityType = $0 AND entityId = $1', entityType, entityId)
-      .sorted('createdAt', false);
-
-    return Array.from(operations);
+    return Array.from(operationsStore.values())
+      .filter(op => op.entityType === entityType && op.entityId === entityId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   /**
@@ -113,20 +123,16 @@ export class SyncQueue {
     status: 'pending' | 'syncing' | 'synced' | 'failed',
     error?: string
   ): void {
-    const realm = RealmDatabase.getInstance();
-    const operation = realm.objectForPrimaryKey<OfflineOperation>('OfflineOperation', operationId);
-
+    const operation = operationsStore.get(operationId);
     if (operation) {
-      realm.write(() => {
-        operation.status = status;
-        operation.lastAttemptAt = new Date();
-        if (error) {
-          operation.error = error;
-        }
-        if (status === 'failed') {
-          operation.retryCount += 1;
-        }
-      });
+      operation.status = status;
+      operation.lastAttemptAt = new Date();
+      if (error) {
+        operation.error = error;
+      }
+      if (status === 'failed') {
+        operation.retryCount += 1;
+      }
     }
   }
 
@@ -148,14 +154,7 @@ export class SyncQueue {
    * Delete operation from queue
    */
   static deleteOperation(operationId: string): void {
-    const realm = RealmDatabase.getInstance();
-    const operation = realm.objectForPrimaryKey<OfflineOperation>('OfflineOperation', operationId);
-
-    if (operation) {
-      realm.write(() => {
-        realm.delete(operation);
-      });
-    }
+    operationsStore.delete(operationId);
   }
 
   /**
@@ -169,11 +168,8 @@ export class SyncQueue {
     failed: number;
     byPriority: Record<number, number>;
   } {
-    const realm = RealmDatabase.getInstance();
-    const allOperations = realm.objects<OfflineOperation>('OfflineOperation');
-
     const stats = {
-      total: allOperations.length,
+      total: operationsStore.size,
       pending: 0,
       syncing: 0,
       synced: 0,
@@ -181,14 +177,12 @@ export class SyncQueue {
       byPriority: {} as Record<number, number>
     };
 
-    allOperations.forEach(op => {
-      // Count by status
+    operationsStore.forEach(op => {
       if (op.status === 'pending') stats.pending++;
       else if (op.status === 'syncing') stats.syncing++;
       else if (op.status === 'synced') stats.synced++;
       else if (op.status === 'failed') stats.failed++;
 
-      // Count by priority
       stats.byPriority[op.priority] = (stats.byPriority[op.priority] || 0) + 1;
     });
 
@@ -199,12 +193,10 @@ export class SyncQueue {
    * Clear synced operations
    */
   static clearSyncedOperations(): void {
-    const realm = RealmDatabase.getInstance();
-    const syncedOps = realm.objects<OfflineOperation>('OfflineOperation')
-      .filtered('status = "synced"');
-
-    realm.write(() => {
-      realm.delete(syncedOps);
+    Array.from(operationsStore.entries()).forEach(([id, op]) => {
+      if (op.status === 'synced') {
+        operationsStore.delete(id);
+      }
     });
   }
 
@@ -212,15 +204,13 @@ export class SyncQueue {
    * Clear old synced operations (older than specified days)
    */
   static clearOldSyncedOperations(daysOld: number = 7): void {
-    const realm = RealmDatabase.getInstance();
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
-    const oldSyncedOps = realm.objects<OfflineOperation>('OfflineOperation')
-      .filtered('status = "synced" AND createdAt < $0', cutoffDate);
-
-    realm.write(() => {
-      realm.delete(oldSyncedOps);
+    Array.from(operationsStore.entries()).forEach(([id, op]) => {
+      if (op.status === 'synced' && op.createdAt < cutoffDate) {
+        operationsStore.delete(id);
+      }
     });
   }
 
@@ -228,15 +218,11 @@ export class SyncQueue {
    * Reset failed operations for retry
    */
   static resetFailedOperations(): void {
-    const realm = RealmDatabase.getInstance();
-    const failedOps = realm.objects<OfflineOperation>('OfflineOperation')
-      .filtered('status = "failed" AND retryCount < $0', this.maxRetries);
-
-    realm.write(() => {
-      failedOps.forEach(op => {
+    operationsStore.forEach(op => {
+      if (op.status === 'failed' && op.retryCount < this.maxRetries) {
         op.status = 'pending';
         op.error = undefined;
-      });
+      }
     });
   }
 
@@ -251,7 +237,6 @@ export class SyncQueue {
    * Get retry delay for operation
    */
   static getRetryDelay(retryCount: number): number {
-    // Exponential backoff: 5s, 10s, 20s
     return this.retryDelayMs * Math.pow(2, retryCount);
   }
 
@@ -259,89 +244,73 @@ export class SyncQueue {
    * Consolidate operations (remove duplicate updates)
    */
   static consolidateOperations(): void {
-    const realm = RealmDatabase.getInstance();
-    const pendingOps = realm.objects<OfflineOperation>('OfflineOperation')
-      .filtered('status = "pending"')
-      .sorted('createdAt', false);
-
     const seen = new Map<string, OfflineOperation>();
+    const toDelete: string[] = [];
 
-    realm.write(() => {
-      pendingOps.forEach(op => {
+    Array.from(operationsStore.entries())
+      .filter(([_, op]) => op.status === 'pending')
+      .sort(([_, a], [__, b]) => b.createdAt.getTime() - a.createdAt.getTime())
+      .forEach(([id, op]) => {
         const key = `${op.entityType}:${op.entityId}`;
         
         if (seen.has(key)) {
-          // If we've seen this entity before, keep only the latest operation
           const existing = seen.get(key)!;
-          
-          // Delete the older operation
           if (existing.createdAt < op.createdAt) {
-            realm.delete(existing);
+            toDelete.push(existing._id);
             seen.set(key, op);
           } else {
-            realm.delete(op);
+            toDelete.push(id);
           }
         } else {
           seen.set(key, op);
         }
       });
-    });
+
+    toDelete.forEach(id => operationsStore.delete(id));
   }
 
   /**
    * Get operations by priority level
    */
   static getOperationsByPriority(priority: number): OfflineOperation[] {
-    const realm = RealmDatabase.getInstance();
-    const operations = realm.objects<OfflineOperation>('OfflineOperation')
-      .filtered('priority = $0 AND (status = "pending" OR status = "failed")', priority)
-      .sorted('createdAt', false);
-
-    return Array.from(operations);
+    return Array.from(operationsStore.values())
+      .filter(op => op.priority === priority && (op.status === 'pending' || op.status === 'failed'))
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   /**
    * Get high priority operations
    */
   static getHighPriorityOperations(): OfflineOperation[] {
-    const realm = RealmDatabase.getInstance();
-    const operations = realm.objects<OfflineOperation>('OfflineOperation')
-      .filtered('priority >= $0 AND (status = "pending" OR status = "failed")', SyncPriority.HIGH)
-      .sorted([['priority', true], ['createdAt', false]]);
-
-    return Array.from(operations);
+    return Array.from(operationsStore.values())
+      .filter(op => op.priority >= SyncPriority.HIGH && (op.status === 'pending' || op.status === 'failed'))
+      .sort((a, b) => {
+        if (a.priority !== b.priority) return b.priority - a.priority;
+        return b.createdAt.getTime() - a.createdAt.getTime();
+      });
   }
 
   /**
    * Check if there are pending operations
    */
   static hasPendingOperations(): boolean {
-    const realm = RealmDatabase.getInstance();
-    const pendingCount = realm.objects<OfflineOperation>('OfflineOperation')
-      .filtered('status = "pending" OR status = "failed"').length;
-
-    return pendingCount > 0;
+    return Array.from(operationsStore.values())
+      .some(op => op.status === 'pending' || op.status === 'failed');
   }
 
   /**
    * Get pending operations count
    */
   static getPendingCount(): number {
-    const realm = RealmDatabase.getInstance();
-    return realm.objects<OfflineOperation>('OfflineOperation')
-      .filtered('status = "pending" OR status = "failed"').length;
+    return Array.from(operationsStore.values())
+      .filter(op => op.status === 'pending' || op.status === 'failed').length;
   }
 
   /**
    * Clear all operations (for testing)
    */
   static clearAll(): void {
-    const realm = RealmDatabase.getInstance();
-    const allOps = realm.objects<OfflineOperation>('OfflineOperation');
-
-    realm.write(() => {
-      realm.delete(allOps);
-    });
+    operationsStore.clear();
   }
 }
 

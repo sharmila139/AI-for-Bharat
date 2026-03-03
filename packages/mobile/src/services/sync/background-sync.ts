@@ -5,8 +5,7 @@
 
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
 import BackgroundFetch from 'react-native-background-fetch';
-import SyncQueue, { SyncPriority } from './sync-queue';
-import { OfflineOperation } from '../../database/realm-config';
+import SyncQueue, { SyncPriority, OfflineOperation } from './sync-queue';
 
 export interface SyncConfig {
   autoSync: boolean;

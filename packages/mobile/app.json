@@ -29,8 +29,6 @@
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.RECORD_AUDIO"
       ]
     },
@@ -42,12 +40,6 @@
         "expo-image-picker",
         {
           "photosPermission": "The app needs access to your photos to upload images for soil analysis and crop recommendations."
-        }
-      ],
-      [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "Allow RuralConnect AI to use your location for weather updates and location-based recommendations."
         }
       ]
     ],

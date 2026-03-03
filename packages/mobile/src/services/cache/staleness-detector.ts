@@ -1,9 +1,8 @@
 /**
  * Cache Staleness Detector
  * Detects and manages stale cache entries with 30-day threshold
+ * NOTE: Stubbed implementation without Realm
  */
-
-import RealmDatabase from '../../database/realm-config';
 
 export interface StalenessConfig {
   marketPriceThreshold: number; // days

@@ -1,21 +1,48 @@
 /**
  * Cache Manager
  * Manages caching for weather, market prices, and content
+ * NOTE: Stubbed implementation without Realm (in-memory only)
  */
 
-import {
-  cacheMarketPrice,
-  getCachedMarketPrices,
-  cacheWeather,
-  getCachedWeather,
-  cacheContent,
-  getCachedContent,
-  cleanExpiredCache,
-  MarketPriceCache,
-  WeatherCache,
-  ContentCache
-} from '../../database/realm-config';
 import { v4 as uuidv4 } from 'uuid';
+
+// Stub interfaces
+export interface MarketPriceCache {
+  _id: string;
+  commodity: string;
+  market: string;
+  price: number;
+  unit: string;
+  date: Date;
+  cachedAt: Date;
+  expiresAt: Date;
+}
+
+export interface WeatherCache {
+  _id: string;
+  location: string;
+  temperature: number;
+  humidity: number;
+  rainfall: number;
+  forecast: string;
+  cachedAt: Date;
+  expiresAt: Date;
+}
+
+export interface ContentCache {
+  _id: string;
+  contentType: string;
+  contentId: string;
+  title: string;
+  data: string;
+  cachedAt: Date;
+  expiresAt: Date;
+}
+
+// In-memory storage
+const marketPriceStore: Map<string, MarketPriceCache> = new Map();
+const weatherStore: Map<string, WeatherCache> = new Map();
+const contentStore: Map<string, ContentCache> = new Map();
 
 export interface CacheConfig {
   marketPriceTTL: number; // hours
@@ -51,7 +78,6 @@ export class CacheManager {
       this.config = { ...this.config, ...config };
     }
 
-    // Setup auto cleanup
     if (this.config.autoCleanup) {
       this.setupAutoCleanup();
     }
@@ -63,7 +89,6 @@ export class CacheManager {
    * Setup automatic cache cleanup
    */
   private static setupAutoCleanup(): void {
-    // Clean expired cache every hour
     setInterval(() => {
       this.cleanExpired();
     }, 60 * 60 * 1000); // 1 hour
@@ -82,13 +107,18 @@ export class CacheManager {
     date: Date = new Date()
   ): void {
     const id = uuidv4();
-    cacheMarketPrice({
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + this.config.marketPriceTTL * 60 * 60 * 1000);
+    
+    marketPriceStore.set(id, {
       _id: id,
       commodity,
       market,
       price,
       unit,
-      date
+      date,
+      cachedAt: now,
+      expiresAt
     });
   }
 
@@ -96,8 +126,9 @@ export class CacheManager {
    * Get cached market prices
    */
   static getMarketPrices(commodity: string): MarketPriceCache[] {
-    const results = getCachedMarketPrices(commodity);
-    return Array.from(results);
+    return Array.from(marketPriceStore.values())
+      .filter(p => p.commodity === commodity)
+      .sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 
   /**
@@ -138,13 +169,18 @@ export class CacheManager {
     forecast: any
   ): void {
     const id = uuidv4();
-    cacheWeather({
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + this.config.weatherTTL * 60 * 60 * 1000);
+    
+    weatherStore.set(location, {
       _id: id,
       location,
       temperature,
       humidity,
       rainfall,
-      forecast: JSON.stringify(forecast)
+      forecast: JSON.stringify(forecast),
+      cachedAt: now,
+      expiresAt
     });
   }
 
@@ -152,7 +188,7 @@ export class CacheManager {
    * Get cached weather
    */
   static getWeather(location: string): WeatherCache | null {
-    return getCachedWeather(location);
+    return weatherStore.get(location) || null;
   }
 
   /**
@@ -193,12 +229,18 @@ export class CacheManager {
     data: any
   ): void {
     const id = uuidv4();
-    cacheContent({
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + this.config.contentTTL * 24 * 60 * 60 * 1000);
+    
+    const key = `${contentType}:${contentId}`;
+    contentStore.set(key, {
       _id: id,
       contentType,
       contentId,
       title,
-      data: JSON.stringify(data)
+      data: JSON.stringify(data),
+      cachedAt: now,
+      expiresAt
     });
   }
 
@@ -206,7 +248,8 @@ export class CacheManager {
    * Get cached content
    */
   static getContent(contentType: string, contentId: string): ContentCache | null {
-    return getCachedContent(contentType, contentId);
+    const key = `${contentType}:${contentId}`;
+    return contentStore.get(key) || null;
   }
 
   /**
@@ -253,7 +296,29 @@ export class CacheManager {
    * Clean expired cache entries
    */
   static cleanExpired(): void {
-    cleanExpiredCache();
+    const now = new Date();
+    
+    // Clean market prices
+    Array.from(marketPriceStore.entries()).forEach(([id, item]) => {
+      if (item.expiresAt < now) {
+        marketPriceStore.delete(id);
+      }
+    });
+    
+    // Clean weather
+    Array.from(weatherStore.entries()).forEach(([id, item]) => {
+      if (item.expiresAt < now) {
+        weatherStore.delete(id);
+      }
+    });
+    
+    // Clean content
+    Array.from(contentStore.entries()).forEach(([id, item]) => {
+      if (item.expiresAt < now) {
+        contentStore.delete(id);
+      }
+    });
+    
     console.log('Expired cache entries cleaned');
   }
 
@@ -261,13 +326,11 @@ export class CacheManager {
    * Get cache statistics
    */
   static getStats(): CacheStats {
-    // TODO: Implement actual stats calculation
-    // This would require querying Realm for counts and sizes
     return {
-      marketPrices: 0,
-      weather: 0,
-      content: 0,
-      totalSize: 0
+      marketPrices: marketPriceStore.size,
+      weather: weatherStore.size,
+      content: contentStore.size,
+      totalSize: 0 // Stub
     };
   }
 
@@ -275,7 +338,9 @@ export class CacheManager {
    * Clear all cache
    */
   static clearAll(): void {
-    cleanExpiredCache();
+    marketPriceStore.clear();
+    weatherStore.clear();
+    contentStore.clear();
     console.log('All cache cleared');
   }
 
@@ -283,7 +348,9 @@ export class CacheManager {
    * Clear cache by type
    */
   static clearByType(type: 'market' | 'weather' | 'content'): void {
-    // TODO: Implement type-specific clearing
+    if (type === 'market') marketPriceStore.clear();
+    else if (type === 'weather') weatherStore.clear();
+    else if (type === 'content') contentStore.clear();
     console.log(`${type} cache cleared`);
   }
 
@@ -299,22 +366,13 @@ export class CacheManager {
    * Prefetch data for offline use
    */
   static async prefetchData(
-    userId: string,
-    location: string,
-    crops: string[]
+    _userId: string,
+    _location: string,
+    _crops: string[]
   ): Promise<void> {
     console.log('Prefetching data for offline use...');
-
-    try {
-      // TODO: Implement actual prefetching
-      // 1. Fetch and cache weather for location
-      // 2. Fetch and cache market prices for crops
-      // 3. Fetch and cache relevant content
-
-      console.log('Prefetch completed');
-    } catch (error) {
-      console.error('Prefetch failed:', error);
-    }
+    // Stub implementation
+    console.log('Prefetch completed');
   }
 
   /**
@@ -325,9 +383,8 @@ export class CacheManager {
     issues: string[];
   } {
     const issues: string[] = [];
-
-    // Check cache size
     const stats = this.getStats();
+    
     if (stats.totalSize > this.config.maxCacheSize * 1024) {
       issues.push('Cache size exceeds limit');
     }
