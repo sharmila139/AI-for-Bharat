@@ -1071,3 +1071,5 @@ const styles = StyleSheet.create({
 });
 
 export default VideoPlayerScreen;
+
+export default VideoPlayerScreen;

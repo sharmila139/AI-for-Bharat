@@ -292,3 +292,5 @@ const styles = StyleSheet.create({
     paddingLeft: 10
   }
 });
+
+export default CropRecommendationScreen;

@@ -1168,3 +1168,5 @@ const styles = StyleSheet.create({
 });
 
 export default AchievementsScreen;
+
+export default AchievementsScreen;

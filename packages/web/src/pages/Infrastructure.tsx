@@ -1,43 +1,81 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 import './Infrastructure.css';
+
+interface Grievance {
+  id: string;
+  description: string;
+  category: string;
+  priority: string;
+  status: string;
+  location: string;
+  submittedAt: string;
+}
 
 export default function Infrastructure() {
   const [grievanceText, setGrievanceText] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [location, setLocation] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [ticketId, setTicketId] = useState('');
+  const [error, setError] = useState('');
+  const [grievances, setGrievances] = useState<Grievance[]>([]);
+  const [loadingGrievances, setLoadingGrievances] = useState(false);
 
-  const handleSubmit = () => {
-    if (grievanceText.trim()) {
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setGrievanceText('');
-      }, 3000);
+  useEffect(() => {
+    loadGrievances();
+  }, []);
+
+  const loadGrievances = async () => {
+    setLoadingGrievances(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/infrastructure/grievance`);
+      const data = await response.json();
+      if (data.success && data.data.grievances) {
+        setGrievances(data.data.grievances);
+      }
+    } catch (err) {
+      console.error('Error loading grievances:', err);
+    } finally {
+      setLoadingGrievances(false);
     }
   };
 
-  const grievances = [
-    {
-      id: 'GRV-2024-001',
-      category: 'Road Repair',
-      status: 'In Progress',
-      date: '2024-03-01',
-      location: 'Main Street',
-    },
-    {
-      id: 'GRV-2024-002',
-      category: 'Water Supply',
-      status: 'Resolved',
-      date: '2024-02-28',
-      location: 'Village Center',
-    },
-    {
-      id: 'GRV-2024-003',
-      category: 'Street Light',
-      status: 'Pending',
-      date: '2024-03-02',
-      location: 'School Road',
-    },
-  ];
+  const handleSubmit = async () => {
+    if (!grievanceText.trim()) return;
+    
+    setLoading(true);
+    setError('');
+    setSubmitSuccess(false);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/infrastructure/grievance`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          description: grievanceText,
+          location: location || 'Not specified'
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.data.ticketId) {
+        setTicketId(data.data.ticketId);
+        setSubmitSuccess(true);
+        setGrievanceText('');
+        setLocation('');
+        // Reload grievances to show the new one
+        setTimeout(() => loadGrievances(), 1000);
+      } else {
+        setError('Failed to submit grievance. Please try again.');
+      }
+    } catch (err) {
+      setError('Error connecting to API. Please check your connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const projects = [
     {
@@ -91,6 +129,14 @@ export default function Infrastructure() {
           <p style={{ marginBottom: '20px', color: '#666' }}>
             Describe the issue you want to report to local authorities
           </p>
+          <input
+            type="text"
+            className="input"
+            placeholder="Location (optional)"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            style={{ marginBottom: '15px' }}
+          />
           <textarea
             className="textarea"
             placeholder="Describe the issue (e.g., broken street light, water supply problem)..."
@@ -101,14 +147,20 @@ export default function Infrastructure() {
           <button
             className="button button-primary"
             onClick={handleSubmit}
-            disabled={!grievanceText.trim()}
+            disabled={!grievanceText.trim() || loading}
           >
-            Submit Grievance
+            {loading ? 'Submitting...' : 'Submit Grievance'}
           </button>
 
-          {submitted && (
+          {error && (
+            <div className="alert-box error" style={{ marginTop: '20px' }}>
+              {error}
+            </div>
+          )}
+
+          {submitSuccess && (
             <div className="success" style={{ marginTop: '20px' }}>
-              ✅ Grievance submitted successfully! Ticket ID: GRV-2024-{Math.floor(Math.random() * 1000)}
+              ✅ Grievance submitted successfully! Ticket ID: {ticketId}
             </div>
           )}
         </div>
@@ -118,25 +170,39 @@ export default function Infrastructure() {
           <p className="section-description">
             Track the status of reported issues in your community
           </p>
-          <div className="grievances-list">
-            {grievances.map((grievance) => (
-              <div key={grievance.id} className="grievance-item">
-                <div className="grievance-header">
-                  <div>
-                    <h3>{grievance.category}</h3>
-                    <p className="grievance-id">{grievance.id}</p>
+          {loadingGrievances ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+              Loading grievances...
+            </div>
+          ) : grievances.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+              No grievances reported yet. Be the first to report an issue!
+            </div>
+          ) : (
+            <div className="grievances-list">
+              {grievances.map((grievance) => (
+                <div key={grievance.id} className="grievance-item">
+                  <div className="grievance-header">
+                    <div>
+                      <h3>{grievance.category}</h3>
+                      <p className="grievance-id">{grievance.id}</p>
+                    </div>
+                    <span className={`status-badge status-${grievance.status.toLowerCase().replace(' ', '-')}`}>
+                      {grievance.status}
+                    </span>
                   </div>
-                  <span className={`status-badge status-${grievance.status.toLowerCase().replace(' ', '-')}`}>
-                    {grievance.status}
-                  </span>
+                  <div className="grievance-details">
+                    <span>📍 {grievance.location}</span>
+                    <span>📅 {new Date(grievance.submittedAt).toLocaleDateString()}</span>
+                    {grievance.priority && <span>⚡ Priority: {grievance.priority}</span>}
+                  </div>
+                  {grievance.description && (
+                    <p className="grievance-description">{grievance.description}</p>
+                  )}
                 </div>
-                <div className="grievance-details">
-                  <span>📍 {grievance.location}</span>
-                  <span>📅 {grievance.date}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="projects-section">

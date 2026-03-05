@@ -1789,3 +1789,5 @@ const styles = StyleSheet.create({
 });
 
 export default ProjectDetailScreen;
+
+export default ProjectDetailScreen;

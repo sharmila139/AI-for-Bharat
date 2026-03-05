@@ -940,3 +940,5 @@ const styles = StyleSheet.create({
 });
 
 export default KnowledgeProgressScreen;
+
+export default KnowledgeProgressScreen;

@@ -136,6 +136,89 @@ export const searchRemedies = async (
   page: number = 1,
   pageSize: number = 20
 ): Promise<RemedySearchResponse> => {
+  // Mock data for development
+  if (__DEV__) {
+    const allMockRemedies: RemedySearchResult[] = [
+      {
+        remedy: {
+          remedy_id: '1',
+          names: { en: 'Ginger Tea for Cold', hi: 'सर्दी के लिए अदरक की चाय' },
+          description: 'Natural remedy for common cold and cough',
+          ailments_treated: ['cold', 'cough', 'sore throat'],
+          preparation_time_minutes: 10,
+          difficulty_level: 'easy',
+          efficacy_rating: 4.5,
+          evidence_level: 'strong',
+          success_rate_percentage: 85,
+          category: 'herbal',
+        },
+        relevance_score: 0.95,
+        average_rating: 4.5,
+        total_ratings: 234,
+        ingredients_count: 3,
+        seasonal_available: true,
+      },
+      {
+        remedy: {
+          remedy_id: '2',
+          names: { en: 'Turmeric Milk', hi: 'हल्दी दूध' },
+          description: 'Anti-inflammatory drink for immunity',
+          ailments_treated: ['inflammation', 'immunity', 'joint pain'],
+          preparation_time_minutes: 5,
+          difficulty_level: 'easy',
+          efficacy_rating: 4.7,
+          evidence_level: 'strong',
+          success_rate_percentage: 90,
+          category: 'ayurvedic',
+        },
+        relevance_score: 0.92,
+        average_rating: 4.7,
+        total_ratings: 456,
+        ingredients_count: 4,
+        seasonal_available: true,
+      },
+      {
+        remedy: {
+          remedy_id: '3',
+          names: { en: 'Honey Lemon Water', hi: 'शहद नींबू पानी' },
+          description: 'Detox drink for digestion',
+          ailments_treated: ['digestion', 'detox', 'weight loss'],
+          preparation_time_minutes: 3,
+          difficulty_level: 'easy',
+          efficacy_rating: 4.3,
+          evidence_level: 'moderate',
+          success_rate_percentage: 75,
+          category: 'home_remedy',
+        },
+        relevance_score: 0.88,
+        average_rating: 4.3,
+        total_ratings: 189,
+        ingredients_count: 3,
+        seasonal_available: true,
+      },
+    ];
+
+    // Filter by query if provided
+    let filtered = allMockRemedies;
+    if (query) {
+      const lowerQuery = query.toLowerCase();
+      filtered = allMockRemedies.filter(
+        (r) =>
+          r.remedy.names.en.toLowerCase().includes(lowerQuery) ||
+          r.remedy.description?.toLowerCase().includes(lowerQuery) ||
+          r.remedy.ailments_treated.some((a) => a.toLowerCase().includes(lowerQuery))
+      );
+    }
+
+    return {
+      results: filtered.slice((page - 1) * pageSize, page * pageSize),
+      total_count: filtered.length,
+      page,
+      page_size: pageSize,
+      filters_applied: filters || {},
+    };
+  }
+
   const response = await api.post('/search', {
     query,
     filters,
@@ -170,6 +253,108 @@ export const getSeasonalRemedies = async (
  * Get top-rated remedies
  */
 export const getTopRatedRemedies = async (limit: number = 10): Promise<RemedySearchResult[]> => {
+  // Mock data for development
+  if (__DEV__) {
+    const mockRemedies: RemedySearchResult[] = [
+      {
+        remedy: {
+          remedy_id: '1',
+          names: { en: 'Ginger Tea for Cold', hi: 'सर्दी के लिए अदरक की चाय' },
+          description: 'Natural remedy for common cold and cough',
+          ailments_treated: ['cold', 'cough', 'sore throat'],
+          preparation_time_minutes: 10,
+          difficulty_level: 'easy',
+          efficacy_rating: 4.5,
+          evidence_level: 'strong',
+          success_rate_percentage: 85,
+          category: 'herbal',
+        },
+        relevance_score: 0.95,
+        average_rating: 4.5,
+        total_ratings: 234,
+        ingredients_count: 3,
+        seasonal_available: true,
+      },
+      {
+        remedy: {
+          remedy_id: '2',
+          names: { en: 'Turmeric Milk', hi: 'हल्दी दूध' },
+          description: 'Anti-inflammatory drink for immunity',
+          ailments_treated: ['inflammation', 'immunity', 'joint pain'],
+          preparation_time_minutes: 5,
+          difficulty_level: 'easy',
+          efficacy_rating: 4.7,
+          evidence_level: 'strong',
+          success_rate_percentage: 90,
+          category: 'ayurvedic',
+        },
+        relevance_score: 0.92,
+        average_rating: 4.7,
+        total_ratings: 456,
+        ingredients_count: 4,
+        seasonal_available: true,
+      },
+      {
+        remedy: {
+          remedy_id: '3',
+          names: { en: 'Honey Lemon Water', hi: 'शहद नींबू पानी' },
+          description: 'Detox drink for digestion',
+          ailments_treated: ['digestion', 'detox', 'weight loss'],
+          preparation_time_minutes: 3,
+          difficulty_level: 'easy',
+          efficacy_rating: 4.3,
+          evidence_level: 'moderate',
+          success_rate_percentage: 75,
+          category: 'home_remedy',
+        },
+        relevance_score: 0.88,
+        average_rating: 4.3,
+        total_ratings: 189,
+        ingredients_count: 3,
+        seasonal_available: true,
+      },
+      {
+        remedy: {
+          remedy_id: '4',
+          names: { en: 'Tulsi Tea', hi: 'तुलसी की चाय' },
+          description: 'Holy basil tea for respiratory health',
+          ailments_treated: ['cough', 'asthma', 'respiratory'],
+          preparation_time_minutes: 8,
+          difficulty_level: 'easy',
+          efficacy_rating: 4.6,
+          evidence_level: 'strong',
+          success_rate_percentage: 88,
+          category: 'ayurvedic',
+        },
+        relevance_score: 0.90,
+        average_rating: 4.6,
+        total_ratings: 312,
+        ingredients_count: 2,
+        seasonal_available: true,
+      },
+      {
+        remedy: {
+          remedy_id: '5',
+          names: { en: 'Aloe Vera Juice', hi: 'एलोवेरा जूस' },
+          description: 'Natural remedy for skin and digestion',
+          ailments_treated: ['skin', 'digestion', 'acidity'],
+          preparation_time_minutes: 5,
+          difficulty_level: 'easy',
+          efficacy_rating: 4.4,
+          evidence_level: 'moderate',
+          success_rate_percentage: 80,
+          category: 'herbal',
+        },
+        relevance_score: 0.85,
+        average_rating: 4.4,
+        total_ratings: 267,
+        ingredients_count: 2,
+        seasonal_available: true,
+      },
+    ];
+    return mockRemedies.slice(0, limit);
+  }
+
   const response = await api.get('/top-rated', {
     params: { limit },
   });

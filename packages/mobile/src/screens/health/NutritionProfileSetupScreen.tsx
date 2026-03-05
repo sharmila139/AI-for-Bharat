@@ -824,3 +824,5 @@ const styles = StyleSheet.create({
 });
 
 export default NutritionProfileSetupScreen;
+
+export default NutritionProfileSetupScreen;

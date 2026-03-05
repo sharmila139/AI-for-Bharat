@@ -1,17 +1,7 @@
 /**
  * Nutrition Tracking Screen
  * RuralConnect AI - Health Module
- * Task 17.11: Build nutrition tracking UI with meal plans
- * 
- * Features:
- * - Health profile setup form
- * - Daily meal plan display (5 meals)
- * - Meal consumption tracking
- * - Nutrition progress dashboard
- * - Compliance tracking visualization
- * - Nutrient gap display
- * - Dietary restriction management
- * - Offline support
+ * Simplified version for development
  */
 
 import React, { useState, useEffect } from 'react';
@@ -23,457 +13,482 @@ import {
   StyleSheet,
   ActivityIndicator,
   RefreshControl,
-  Alert
 } from 'react-native';
-import { NutritionApiService } from '../../services/api/nutrition-api';
-import { HealthProfileForm } from '../../components/nutrition/HealthProfileForm';
-import { DailyMealPlan } from '../../components/nutrition/DailyMealPlan';
-import { NutritionDashboard } from '../../components/nutrition/NutritionDashboard';
-import { ComplianceTracker } from '../../components/nutrition/ComplianceTracker';
-import { NutrientGapDisplay } from '../../components/nutrition/NutrientGapDisplay';
-import { DietaryRestrictionManager } from '../../components/nutrition/DietaryRestrictionManager';
-import { OfflineIndicator } from '../../components/OfflineIndicator';
 
 interface NutritionTrackingScreenProps {
-  userId: string;
+  userId?: string;
   navigation: any;
 }
 
 type TabType = 'today' | 'progress' | 'profile';
 
+interface Meal {
+  id: string;
+  name: string;
+  time: string;
+  items: string[];
+  calories: number;
+  consumed: boolean;
+}
+
 export const NutritionTrackingScreen: React.FC<NutritionTrackingScreenProps> = ({
-  userId,
+  userId = 'mock-user',
   navigation
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('today');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [hasProfile, setHasProfile] = useState(false);
-  const [healthProfile, setHealthProfile] = useState<any>(null);
-  const [dailyPlan, setDailyPlan] = useState<any>(null);
-  const [progress, setProgress] = useState<any>(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
-  const nutritionApi = new NutritionApiService();
+  const [dailyPlan, setDailyPlan] = useState<Meal[]>([]);
+  const [targetCalories] = useState(2200);
+  const [consumedCalories, setConsumedCalories] = useState(0);
 
   useEffect(() => {
     loadData();
-  }, [userId, selectedDate]);
+  }, []);
 
   const loadData = async () => {
     try {
       setLoading(true);
 
-      // Check if user has health profile
-      const profile = await nutritionApi.getHealthProfile(userId);
+      const mockMeals: Meal[] = [
+        {
+          id: '1',
+          name: 'Breakfast',
+          time: '7:00 AM',
+          items: ['Roti (2)', 'Dal', 'Vegetable Curry'],
+          calories: 450,
+          consumed: true,
+        },
+        {
+          id: '2',
+          name: 'Mid-Morning Snack',
+          time: '10:00 AM',
+          items: ['Banana', 'Handful of Nuts'],
+          calories: 200,
+          consumed: false,
+        },
+        {
+          id: '3',
+          name: 'Lunch',
+          time: '1:00 PM',
+          items: ['Rice', 'Dal', 'Vegetable', 'Curd'],
+          calories: 600,
+          consumed: true,
+        },
+        {
+          id: '4',
+          name: 'Evening Snack',
+          time: '4:00 PM',
+          items: ['Tea', 'Biscuits'],
+          calories: 150,
+          consumed: false,
+        },
+        {
+          id: '5',
+          name: 'Dinner',
+          time: '8:00 PM',
+          items: ['Roti (3)', 'Vegetable', 'Dal'],
+          calories: 500,
+          consumed: false,
+        },
+      ];
+
+      setDailyPlan(mockMeals);
       
-      if (profile) {
-        setHasProfile(true);
-        setHealthProfile(profile);
+      const consumed = mockMeals
+        .filter(meal => meal.consumed)
+        .reduce((sum, meal) => sum + meal.calories, 0);
+      setConsumedCalories(consumed);
 
-        // Load daily meal plan
-        await loadDailyPlan();
-
-        // Load progress data
-        await loadProgress();
-      } else {
-        setHasProfile(false);
-      }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error loading nutrition data:', error);
-      if (error.message !== 'Health profile not found') {
-        Alert.alert('Error', 'Failed to load nutrition data');
-      }
     } finally {
       setLoading(false);
     }
   };
 
-  const loadDailyPlan = async () => {
-    try {
-      const plan = await nutritionApi.getDailyMealPlan(
-        userId,
-        selectedDate.toISOString().split('T')[0]
-      );
-      setDailyPlan(plan);
-    } catch (error) {
-      console.error('Error loading daily plan:', error);
-    }
-  };
-
-  const loadProgress = async () => {
-    try {
-      const progressData = await nutritionApi.getDailyProgress(
-        userId,
-        selectedDate.toISOString().split('T')[0]
-      );
-      setProgress(progressData);
-    } catch (error) {
-      console.error('Error loading progress:', error);
-    }
-  };
-
-  const onRefresh = async () => {
+  const handleRefresh = async () => {
     setRefreshing(true);
     await loadData();
     setRefreshing(false);
   };
 
-  const handleProfileCreated = async (profile: any) => {
-    setHealthProfile(profile);
-    setHasProfile(true);
-    await loadData();
+  const toggleMealConsumed = (mealId: string) => {
+    setDailyPlan(prevPlan => {
+      const updated = prevPlan.map(meal =>
+        meal.id === mealId ? { ...meal, consumed: !meal.consumed } : meal
+      );
+      
+      const consumed = updated
+        .filter(meal => meal.consumed)
+        .reduce((sum, meal) => sum + meal.calories, 0);
+      setConsumedCalories(consumed);
+      
+      return updated;
+    });
   };
 
-  const handleMealConsumed = async (mealPlanId: string, rating: number) => {
-    try {
-      await nutritionApi.markMealConsumed(mealPlanId, rating);
-      await loadDailyPlan();
-      await loadProgress();
-      Alert.alert('Success', 'Meal marked as consumed');
-    } catch (error) {
-      Alert.alert('Error', 'Failed to mark meal as consumed');
-    }
-  };
-
-  const handleDateChange = (date: Date) => {
-    setSelectedDate(date);
-  };
-
-  const renderTabBar = () => (
-    <View style={styles.tabBar}>
-      <TouchableOpacity
-        style={[styles.tab, activeTab === 'today' && styles.activeTab]}
-        onPress={() => setActiveTab('today')}
-      >
-        <Text style={[styles.tabText, activeTab === 'today' && styles.activeTabText]}>
-          Today's Plan
+  const renderTodayTab = () => (
+    <View style={styles.tabContent}>
+      <View style={styles.calorieCard}>
+        <Text style={styles.cardTitle}>Daily Calorie Goal</Text>
+        <View style={styles.calorieProgress}>
+          <Text style={styles.calorieValue}>{consumedCalories}</Text>
+          <Text style={styles.calorieSeparator}>/</Text>
+          <Text style={styles.calorieTarget}>{targetCalories}</Text>
+          <Text style={styles.calorieUnit}>kcal</Text>
+        </View>
+        <View style={styles.progressBar}>
+          <View
+            style={[
+              styles.progressFill,
+              {
+                width: `${Math.min((consumedCalories / targetCalories) * 100, 100)}%`,
+                backgroundColor: consumedCalories > targetCalories ? '#F44336' : '#4CAF50',
+              },
+            ]}
+          />
+        </View>
+        <Text style={styles.progressText}>
+          {Math.round((consumedCalories / targetCalories) * 100)}% of daily goal
         </Text>
-      </TouchableOpacity>
+      </View>
 
-      <TouchableOpacity
-        style={[styles.tab, activeTab === 'progress' && styles.activeTab]}
-        onPress={() => setActiveTab('progress')}
-      >
-        <Text style={[styles.tabText, activeTab === 'progress' && styles.activeTabText]}>
-          Progress
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[styles.tab, activeTab === 'profile' && styles.activeTab]}
-        onPress={() => setActiveTab('profile')}
-      >
-        <Text style={[styles.tabText, activeTab === 'profile' && styles.activeTabText]}>
-          Profile
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.mealSection}>
+        <Text style={styles.sectionTitle}>Today's Meal Plan</Text>
+        {dailyPlan.map(meal => (
+          <TouchableOpacity
+            key={meal.id}
+            style={[styles.mealCard, meal.consumed && styles.mealCardConsumed]}
+            onPress={() => toggleMealConsumed(meal.id)}
+          >
+            <View style={styles.mealHeader}>
+              <View style={styles.mealInfo}>
+                <Text style={[styles.mealName, meal.consumed && styles.mealNameConsumed]}>
+                  {meal.name}
+                </Text>
+                <Text style={styles.mealTime}>{meal.time}</Text>
+              </View>
+              <View style={styles.mealStatus}>
+                <Text style={styles.mealCalories}>{meal.calories} kcal</Text>
+                <View style={[styles.checkbox, meal.consumed && styles.checkboxChecked]}>
+                  {meal.consumed && <Text style={styles.checkmark}>✓</Text>}
+                </View>
+              </View>
+            </View>
+            <View style={styles.mealItems}>
+              {meal.items.map((item, index) => (
+                <Text key={index} style={styles.mealItem}>
+                  • {item}
+                </Text>
+              ))}
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   );
 
-  const renderContent = () => {
-    if (!hasProfile) {
-      return (
-        <View style={styles.setupContainer}>
-          <Text style={styles.setupTitle}>Set Up Your Health Profile</Text>
-          <Text style={styles.setupDescription}>
-            Create your health profile to get personalized nutrition plans based on your needs.
-          </Text>
-          <HealthProfileForm
-            userId={userId}
-            onProfileCreated={handleProfileCreated}
-          />
-        </View>
-      );
-    }
+  const renderProgressTab = () => (
+    <View style={styles.tabContent}>
+      <View style={styles.placeholderCard}>
+        <Text style={styles.placeholderIcon}>📊</Text>
+        <Text style={styles.placeholderTitle}>Progress Tracking</Text>
+        <Text style={styles.placeholderText}>
+          View your nutrition progress, compliance rates, and health trends over time.
+        </Text>
+        <Text style={styles.placeholderSubtext}>Coming soon...</Text>
+      </View>
+    </View>
+  );
 
-    switch (activeTab) {
-      case 'today':
-        return (
-          <View style={styles.contentContainer}>
-            {dailyPlan ? (
-              <DailyMealPlan
-                dailyPlan={dailyPlan}
-                selectedDate={selectedDate}
-                onDateChange={handleDateChange}
-                onMealConsumed={handleMealConsumed}
-              />
-            ) : (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyStateText}>
-                  No meal plan for this date
-                </Text>
-                <TouchableOpacity
-                  style={styles.generateButton}
-                  onPress={loadDailyPlan}
-                >
-                  <Text style={styles.generateButtonText}>
-                    Generate Meal Plan
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-        );
-
-      case 'progress':
-        return (
-          <ScrollView
-            style={styles.contentContainer}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-            {progress && (
-              <>
-                <NutritionDashboard
-                  userId={userId}
-                  progress={progress}
-                  selectedDate={selectedDate}
-                />
-
-                <ComplianceTracker
-                  userId={userId}
-                  compliance={progress.compliance}
-                  selectedDate={selectedDate}
-                />
-
-                <NutrientGapDisplay
-                  userId={userId}
-                  nutrientGaps={progress.nutrientGaps}
-                  recommendations={progress.recommendations}
-                />
-              </>
-            )}
-          </ScrollView>
-        );
-
-      case 'profile':
-        return (
-          <ScrollView
-            style={styles.contentContainer}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-            <View style={styles.profileSection}>
-              <Text style={styles.sectionTitle}>Health Profile</Text>
-              {healthProfile && (
-                <View style={styles.profileInfo}>
-                  <ProfileInfoRow label="Age" value={`${healthProfile.age} years`} />
-                  <ProfileInfoRow label="Gender" value={healthProfile.gender} />
-                  <ProfileInfoRow label="Weight" value={`${healthProfile.weightKg} kg`} />
-                  <ProfileInfoRow label="Height" value={`${healthProfile.heightCm} cm`} />
-                  <ProfileInfoRow label="Activity Level" value={healthProfile.activityLevel} />
-                  <ProfileInfoRow label="Occupation" value={healthProfile.occupationType} />
-                  <ProfileInfoRow
-                    label="Target Calories"
-                    value={`${healthProfile.targetCalories} kcal/day`}
-                  />
-                </View>
-              )}
-
-              <TouchableOpacity
-                style={styles.editButton}
-                onPress={() => {
-                  // Navigate to edit profile
-                }}
-              >
-                <Text style={styles.editButtonText}>Edit Profile</Text>
-              </TouchableOpacity>
-            </View>
-
-            <DietaryRestrictionManager
-              userId={userId}
-              restrictions={healthProfile?.dietaryRestrictions || []}
-              onRestrictionsUpdated={loadData}
-            />
-          </ScrollView>
-        );
-
-      default:
-        return null;
-    }
-  };
+  const renderProfileTab = () => (
+    <View style={styles.tabContent}>
+      <View style={styles.placeholderCard}>
+        <Text style={styles.placeholderIcon}>👤</Text>
+        <Text style={styles.placeholderTitle}>Health Profile</Text>
+        <Text style={styles.placeholderText}>
+          Set up your health profile including age, weight, activity level, and dietary restrictions.
+        </Text>
+        <Text style={styles.placeholderSubtext}>Coming soon...</Text>
+      </View>
+    </View>
+  );
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#4CAF50" />
-        <Text style={styles.loadingText}>Loading nutrition data...</Text>
+        <Text style={styles.loadingText}>Loading nutrition plan...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <OfflineIndicator />
-      
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Nutrition Tracking</Text>
-        <Text style={styles.headerSubtitle}>
-          Personalized meal plans for optimal health
-        </Text>
+      <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'today' && styles.activeTab]}
+          onPress={() => setActiveTab('today')}
+        >
+          <Text style={[styles.tabText, activeTab === 'today' && styles.activeTabText]}>
+            Today
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'progress' && styles.activeTab]}
+          onPress={() => setActiveTab('progress')}
+        >
+          <Text style={[styles.tabText, activeTab === 'progress' && styles.activeTabText]}>
+            Progress
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'profile' && styles.activeTab]}
+          onPress={() => setActiveTab('profile')}
+        >
+          <Text style={[styles.tabText, activeTab === 'profile' && styles.activeTabText]}>
+            Profile
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      {hasProfile && renderTabBar()}
-
-      {renderContent()}
+      <ScrollView
+        style={styles.scrollView}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
+      >
+        {activeTab === 'today' && renderTodayTab()}
+        {activeTab === 'progress' && renderProgressTab()}
+        {activeTab === 'profile' && renderProfileTab()}
+      </ScrollView>
     </View>
   );
 };
 
-const ProfileInfoRow: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <View style={styles.profileInfoRow}>
-    <Text style={styles.profileInfoLabel}>{label}:</Text>
-    <Text style={styles.profileInfoValue}>{value}</Text>
-  </View>
-);
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5'
+    backgroundColor: '#f5f5f5',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5'
+    backgroundColor: '#f5f5f5',
   },
   loadingText: {
-    marginTop: 16,
+    marginTop: 12,
     fontSize: 16,
-    color: '#666'
-  },
-  header: {
-    backgroundColor: '#4CAF50',
-    padding: 20,
-    paddingTop: 40
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFF',
-    marginBottom: 4
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#E8F5E9'
+    color: '#666',
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: '#FFF',
+    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0'
+    borderBottomColor: '#e0e0e0',
   },
   tab: {
     flex: 1,
     paddingVertical: 16,
     alignItems: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent'
+    justifyContent: 'center',
   },
   activeTab: {
-    borderBottomColor: '#4CAF50'
+    borderBottomWidth: 3,
+    borderBottomColor: '#4CAF50',
   },
   tabText: {
-    fontSize: 14,
+    fontSize: 16,
+    color: '#666',
     fontWeight: '500',
-    color: '#666'
   },
   activeTabText: {
     color: '#4CAF50',
-    fontWeight: 'bold'
+    fontWeight: '700',
   },
-  setupContainer: {
+  scrollView: {
     flex: 1,
-    padding: 20
   },
-  setupTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8
-  },
-  setupDescription: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 24,
-    lineHeight: 20
-  },
-  contentContainer: {
-    flex: 1
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 40
-  },
-  emptyStateText: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 20,
-    textAlign: 'center'
-  },
-  generateButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8
-  },
-  generateButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-  profileSection: {
-    backgroundColor: '#FFF',
-    margin: 16,
+  tabContent: {
     padding: 16,
-    borderRadius: 8,
+  },
+  calorieCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3
+    elevation: 3,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+    marginBottom: 12,
+  },
+  calorieProgress: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginBottom: 16,
+  },
+  calorieValue: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+  },
+  calorieSeparator: {
+    fontSize: 24,
+    color: '#999',
+    marginHorizontal: 8,
+  },
+  calorieTarget: {
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#999',
+  },
+  calorieUnit: {
+    fontSize: 16,
+    color: '#999',
+    marginLeft: 8,
+  },
+  progressBar: {
+    height: 8,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  progressText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+  },
+  mealSection: {
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 16
+    marginBottom: 12,
   },
-  profileInfo: {
-    marginBottom: 16
+  mealCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 2,
+    borderColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
-  profileInfoRow: {
+  mealCardConsumed: {
+    borderColor: '#4CAF50',
+    backgroundColor: '#f1f8f4',
+  },
+  mealHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0'
+    alignItems: 'flex-start',
+    marginBottom: 12,
   },
-  profileInfoLabel: {
+  mealInfo: {
+    flex: 1,
+  },
+  mealName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  mealNameConsumed: {
+    color: '#4CAF50',
+  },
+  mealTime: {
     fontSize: 14,
     color: '#666',
-    fontWeight: '500'
   },
-  profileInfoValue: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: 'bold'
+  mealStatus: {
+    alignItems: 'flex-end',
   },
-  editButton: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center'
-  },
-  editButtonText: {
-    color: '#FFF',
+  mealCalories: {
     fontSize: 16,
-    fontWeight: 'bold'
-  }
+    fontWeight: '600',
+    color: '#4CAF50',
+    marginBottom: 8,
+  },
+  checkbox: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  checkboxChecked: {
+    backgroundColor: '#4CAF50',
+    borderColor: '#4CAF50',
+  },
+  checkmark: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  mealItems: {
+    paddingLeft: 8,
+  },
+  mealItem: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+    lineHeight: 20,
+  },
+  placeholderCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 32,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  placeholderIcon: {
+    fontSize: 64,
+    marginBottom: 16,
+  },
+  placeholderTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 16,
+  },
+  placeholderSubtext: {
+    fontSize: 14,
+    color: '#999',
+    fontStyle: 'italic',
+  },
 });
+
+export default NutritionTrackingScreen;

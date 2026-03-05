@@ -656,3 +656,5 @@ const styles = StyleSheet.create({
 });
 
 export default RemedyDetailScreen;
+
+export default RemedyDetailScreen;

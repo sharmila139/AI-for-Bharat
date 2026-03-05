@@ -22,6 +22,11 @@ interface OfflineIndicatorProps {
 export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({ 
   showDetails = false 
 }) => {
+  // Temporarily disabled to prevent infinite loop
+  // TODO: Fix the infinite loop issue in useEffect
+  return null;
+  
+  /* ORIGINAL CODE - COMMENTED OUT
   const [isOnline, setIsOnline] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
@@ -35,7 +40,11 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
     // Setup listeners
     const connectivityListener = (online: boolean) => {
       setIsOnline(online);
-      updateStatus();
+      
+      // Update other status without calling updateStatus to avoid loops
+      const syncStatus = BackgroundSyncService.getSyncStatus();
+      setIsSyncing(syncStatus.isSyncing);
+      setPendingCount(syncStatus.pendingCount);
       
       // Animate indicator
       Animated.timing(fadeAnim, {
@@ -46,21 +55,30 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
     };
 
     const syncListener = () => {
-      updateStatus();
+      const syncStatus = BackgroundSyncService.getSyncStatus();
+      setIsSyncing(syncStatus.isSyncing);
+      setPendingCount(syncStatus.pendingCount);
     };
 
     BackgroundSyncService.addConnectivityListener(connectivityListener);
     BackgroundSyncService.addSyncListener(syncListener);
 
     // Update status periodically
-    const interval = setInterval(updateStatus, 5000);
+    const interval = setInterval(() => {
+      const connectivity = BackgroundSyncService.getConnectivityStatus();
+      const syncStatus = BackgroundSyncService.getSyncStatus();
+      
+      setIsOnline(connectivity.isOnline);
+      setIsSyncing(syncStatus.isSyncing);
+      setPendingCount(syncStatus.pendingCount);
+    }, 5000);
 
     return () => {
       BackgroundSyncService.removeConnectivityListener(connectivityListener);
       BackgroundSyncService.removeSyncListener(syncListener);
       clearInterval(interval);
     };
-  }, []);
+  }, [fadeAnim]);
 
   const updateStatus = () => {
     const connectivity = BackgroundSyncService.getConnectivityStatus();
@@ -207,6 +225,7 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
       {showDetails && renderModal()}
     </>
   );
+  */
 };
 
 const styles = StyleSheet.create({

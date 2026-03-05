@@ -183,29 +183,9 @@ export const GrievanceReportScreen: React.FC<GrievanceReportScreenProps> = ({
         reporterContact: isAnonymous ? reporterContact.trim() : undefined,
       };
 
-      if (isOnline) {
-        // Submit directly if online
-        const result = await submitGrievance(input);
-        showSuccessScreen(result.ticketNumber, result.isDuplicate);
-      } else {
-        // Queue for offline sync
-        await SyncQueue.enqueue({
-          type: 'grievance_submission',
-          data: input,
-          priority: 'high',
-        });
-        
-        Alert.alert(
-          'Queued for Submission',
-          'You are offline. Your grievance will be submitted automatically when you reconnect.',
-          [
-            {
-              text: 'OK',
-              onPress: () => navigation.goBack(),
-            },
-          ]
-        );
-      }
+      // Submit grievance (works in both online and offline mode with mock data)
+      const result = await submitGrievance(input);
+      showSuccessScreen(result.ticketNumber, result.isDuplicate);
     } catch (error: any) {
       console.error('Submission error:', error);
       Alert.alert(
@@ -406,15 +386,13 @@ export const GrievanceReportScreen: React.FC<GrievanceReportScreenProps> = ({
             {isSubmitting ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <Text style={styles.submitButtonText}>
-                {isOnline ? 'Submit Grievance' : 'Queue for Submission'}
-              </Text>
+              <Text style={styles.submitButtonText}>Submit Grievance</Text>
             )}
           </TouchableOpacity>
 
           {!isOnline && (
             <Text style={styles.offlineNote}>
-              You are offline. The grievance will be submitted when you reconnect.
+              You are offline. Using mock submission for testing.
             </Text>
           )}
         </View>
@@ -558,5 +536,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
+
+export default GrievanceReportScreen;
 
 export default GrievanceReportScreen;

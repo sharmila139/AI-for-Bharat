@@ -975,3 +975,5 @@ const styles = StyleSheet.create({
 });
 
 export default GrievanceListScreen;
+
+export default GrievanceListScreen;

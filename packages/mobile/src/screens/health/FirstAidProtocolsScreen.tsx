@@ -790,3 +790,5 @@ const styles = StyleSheet.create({
 });
 
 export default FirstAidProtocolsScreen;
+
+export default FirstAidProtocolsScreen;

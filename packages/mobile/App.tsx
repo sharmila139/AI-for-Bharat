@@ -4,8 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { RootNavigator, linking } from './src/navigation';
+import { RootNavigator } from './src/navigation';
 import { ErrorBoundary } from './src/components';
+// import { AccessibilityProvider } from './src/contexts/AccessibilityContext';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -18,17 +19,19 @@ function App(): React.JSX.Element {
 
   return (
     <ErrorBoundary onError={handleError}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaProvider>
-          <NavigationContainer linking={linking}>
-            <StatusBar
-              barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-              backgroundColor={isDarkMode ? '#1a1a1a' : '#ffffff'}
-            />
-            <RootNavigator />
-          </NavigationContainer>
-        </SafeAreaProvider>
-      </GestureHandlerRootView>
+      {/* <AccessibilityProvider> */}
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <SafeAreaProvider>
+            <NavigationContainer>
+              <StatusBar
+                barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+                backgroundColor={isDarkMode ? '#1a1a1a' : '#ffffff'}
+              />
+              <RootNavigator />
+            </NavigationContainer>
+          </SafeAreaProvider>
+        </GestureHandlerRootView>
+      {/* </AccessibilityProvider> */}
     </ErrorBoundary>
   );
 }

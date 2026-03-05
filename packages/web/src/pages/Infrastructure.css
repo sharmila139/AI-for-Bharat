@@ -159,3 +159,39 @@
 .infrastructure-info h3 {
   color: #f59e0b;
 }
+
+
+/* Input field */
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+/* Grievance description */
+.grievance-description {
+  margin-top: 10px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Alert box */
+.alert-box.error {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 8px;
+}

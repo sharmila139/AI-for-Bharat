@@ -1267,3 +1267,5 @@ const styles = StyleSheet.create({
 });
 
 export default ProjectDashboardScreen;
+
+export default ProjectDashboardScreen;

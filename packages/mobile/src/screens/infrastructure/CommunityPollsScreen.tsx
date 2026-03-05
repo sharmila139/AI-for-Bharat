@@ -128,6 +128,89 @@ const CommunityPollsScreen: React.FC = () => {
     try {
       setLoading(true);
 
+      // Mock data for development
+      if (__DEV__) {
+        const mockPolls: Poll[] = [
+          {
+            poll_id: '1',
+            title: 'Community Park Improvement',
+            description: 'Vote on which improvement should be prioritized for the community park',
+            poll_type: 'single_choice',
+            status: 'active',
+            options: [
+              { option_id: '1', text: 'New playground equipment' },
+              { option_id: '2', text: 'Walking/jogging track' },
+              { option_id: '3', text: 'Outdoor gym' },
+              { option_id: '4', text: 'Better lighting' },
+            ],
+            start_date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            end_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+            total_votes: 245,
+            is_binding: true,
+            user_has_voted: false,
+            user_is_eligible: true,
+            show_results_after_voting: true,
+            show_real_time_results: true,
+          },
+          {
+            poll_id: '2',
+            title: 'Road Repair Priority',
+            description: 'Select which roads need urgent repair (select up to 3)',
+            poll_type: 'multiple_choice',
+            status: 'active',
+            options: [
+              { option_id: '1', text: 'Main Street' },
+              { option_id: '2', text: 'Park Avenue' },
+              { option_id: '3', text: 'School Road' },
+              { option_id: '4', text: 'Market Street' },
+              { option_id: '5', text: 'Hospital Road' },
+            ],
+            start_date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+            total_votes: 189,
+            is_binding: false,
+            user_has_voted: false,
+            user_is_eligible: true,
+            show_results_after_voting: true,
+            show_real_time_results: false,
+          },
+          {
+            poll_id: '3',
+            title: 'Community Budget Allocation',
+            description: 'Allocate ₹10,00,000 across different community projects',
+            poll_type: 'budget_allocation',
+            status: 'active',
+            options: [
+              { option_id: '1', text: 'Street Lighting', budget_amount: 0 },
+              { option_id: '2', text: 'Water Supply', budget_amount: 0 },
+              { option_id: '3', text: 'Sanitation', budget_amount: 0 },
+              { option_id: '4', text: 'Education', budget_amount: 0 },
+              { option_id: '5', text: 'Healthcare', budget_amount: 0 },
+            ],
+            start_date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+            end_date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+            total_votes: 156,
+            is_binding: true,
+            user_has_voted: false,
+            user_is_eligible: true,
+            show_results_after_voting: true,
+            show_real_time_results: false,
+          },
+        ];
+
+        // Filter by status
+        const filtered = filterStatus === 'all' 
+          ? mockPolls 
+          : mockPolls.filter(p => p.status === filterStatus);
+
+        setPolls(filtered);
+        setLoading(false);
+        setRefreshing(false);
+        return;
+      }
+
+      // Production API call (commented out for now)
+      /*
       const statusParam = filterStatus === 'all' ? '' : `?status=${filterStatus}`;
       const response = await fetch(`${API_BASE_URL}/api/community-polls${statusParam}`);
       const data = await response.json();
@@ -137,9 +220,14 @@ const CommunityPollsScreen: React.FC = () => {
       } else {
         Alert.alert('Error', 'Failed to load polls');
       }
+      */
+      
+      // Fallback if API not available
+      setPolls([]);
     } catch (error) {
+      console.error('Error loading polls:', error);
       Alert.alert('Error', 'Failed to load polls');
-      console.error(error);
+      setPolls([]);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -173,6 +261,41 @@ const CommunityPollsScreen: React.FC = () => {
 
   const loadResults = async (pollId: string) => {
     try {
+      // Mock results in development mode
+      if (__DEV__) {
+        console.log('DEV MODE: Mock poll results');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        const mockResults: PollResults = {
+          poll_id: pollId,
+          total_votes: 245,
+          turnout_percentage: 35,
+          results_by_option: {
+            '1': {
+              option_id: '1',
+              option_text: 'Option 1',
+              vote_count: 120,
+              percentage: 49,
+            },
+            '2': {
+              option_id: '2',
+              option_text: 'Option 2',
+              vote_count: 75,
+              percentage: 31,
+            },
+            '3': {
+              option_id: '3',
+              option_text: 'Option 3',
+              vote_count: 50,
+              percentage: 20,
+            },
+          },
+        };
+        
+        setPollResults(mockResults);
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/community-polls/${pollId}/results`);
       const data = await response.json();
 
@@ -191,8 +314,8 @@ const CommunityPollsScreen: React.FC = () => {
         Alert.alert('Results Hidden', data.message || 'Results are not available yet');
       }
     } catch (error) {
+      console.error('Error loading results:', error);
       Alert.alert('Error', 'Failed to load results');
-      console.error(error);
     }
   };
 
@@ -238,6 +361,29 @@ const CommunityPollsScreen: React.FC = () => {
     }
 
     try {
+      // Mock vote submission in development mode
+      if (__DEV__) {
+        console.log('DEV MODE: Mock vote submission');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        Alert.alert('Success', 'Your vote has been recorded!');
+        setShowVoteModal(false);
+        
+        // Update poll to mark as voted
+        setPolls(polls.map(p => 
+          p.poll_id === selectedPoll.poll_id 
+            ? { ...p, user_has_voted: true, total_votes: p.total_votes + 1 }
+            : p
+        ));
+        
+        // Show results if allowed
+        if (selectedPoll.show_results_after_voting || selectedPoll.show_real_time_results) {
+          await loadResults(selectedPoll.poll_id);
+          setShowResultsModal(true);
+        }
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/community-polls/${selectedPoll.poll_id}/vote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -260,8 +406,8 @@ const CommunityPollsScreen: React.FC = () => {
         Alert.alert('Error', data.message || 'Failed to submit vote');
       }
     } catch (error) {
+      console.error('Error submitting vote:', error);
       Alert.alert('Error', 'Failed to submit vote');
-      console.error(error);
     }
   };
 

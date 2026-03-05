@@ -632,3 +632,5 @@ const styles = StyleSheet.create({
 });
 
 export default MealComplianceScreen;
+
+export default MealComplianceScreen;

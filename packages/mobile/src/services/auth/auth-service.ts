@@ -61,6 +61,16 @@ export interface CreateProfileResponse {
  * Send OTP to phone number
  */
 export const sendOTP = async (phoneNumber: string): Promise<SendOTPResponse> => {
+  // Mock OTP for development/testing
+  if (__DEV__) {
+    console.log('DEV MODE: Mock OTP sent. Use any 6-digit code (e.g., 123456)');
+    return {
+      success: true,
+      message: 'OTP sent successfully (DEV MODE: use 123456)',
+      expiresIn: 300,
+    };
+  }
+
   try {
     const response = await axios.post(`${API_BASE_URL}/auth/send-otp`, {
       phoneNumber,
@@ -83,6 +93,43 @@ export const verifyOTP = async (
   phoneNumber: string,
   otp: string
 ): Promise<VerifyOTPResponse> => {
+  // Mock OTP verification for development/testing
+  if (__DEV__) {
+    console.log('DEV MODE: Mock OTP verification');
+    
+    // Accept any 6-digit OTP in dev mode
+    if (otp.length === 6) {
+      const mockUser: User = {
+        id: 'mock-user-' + phoneNumber,
+        phoneNumber,
+        name: 'Test User',
+        village: 'Test Village',
+        occupation: 'Farmer',
+        language: 'en',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      const mockTokens = {
+        accessToken: 'mock-access-token-' + Date.now(),
+        refreshToken: 'mock-refresh-token-' + Date.now(),
+      };
+
+      // Store tokens
+      await setAuthTokens(mockTokens);
+      await setUserData(mockUser);
+
+      return {
+        success: true,
+        message: 'OTP verified successfully (DEV MODE)',
+        accessToken: mockTokens.accessToken,
+        refreshToken: mockTokens.refreshToken,
+        user: mockUser,
+        isNewUser: false,
+      };
+    }
+  }
+
   try {
     const response = await axios.post(`${API_BASE_URL}/auth/verify-otp`, {
       phoneNumber,

@@ -1070,3 +1070,5 @@ const styles = StyleSheet.create({
 });
 
 export default OfflineContentManagerScreen;
+
+export default OfflineContentManagerScreen;

@@ -399,15 +399,15 @@ This task list provides a comprehensive implementation plan for building RuralCo
 
 ### 27. Accessibility Features
 
-- [ ] 27.1 Implement voice command system for core features
-- [ ] 27.2 Create text-to-speech for all content
-- [ ] 27.3 Implement screen reader compatibility
-- [ ] 27.4 Create high contrast mode and adjustable font sizes
-- [ ] 27.5 Implement voice input for forms
-- [ ] 27.6 Create icon-based navigation for low literacy
-- [ ] 27.7 Implement audio instructions for complex tasks
-- [ ] 27.8 Write property test for voice command support (Property 44)
-- [ ] 27.9 Write property test for voice input for forms (Property 45)
+- [x] 27.1 Implement voice command system for core features
+- [x] 27.2 Create text-to-speech for all content
+- [x] 27.3 Implement screen reader compatibility
+- [x] 27.4 Create high contrast mode and adjustable font sizes
+- [x] 27.5 Implement voice input for forms
+- [x] 27.6 Create icon-based navigation for low literacy
+- [x] 27.7 Implement audio instructions for complex tasks
+- [x] 27.8 Write property test for voice command support (Property 44)
+- [x] 27.9 Write property test for voice input for forms (Property 45)
 
 ---
 

@@ -592,10 +592,58 @@ class EducationService {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
+      {
+        id: '3',
+        title: 'English Grammar Basics',
+        description: 'Master the fundamentals of English grammar',
+        subject: 'english',
+        topic: 'Grammar',
+        gradeLevel: '6',
+        difficulty: 'easy',
+        contentType: 'interactive',
+        duration: 25,
+        language: 'English',
+        viewCount: 1500,
+        rating: 4.6,
+        isOfflineAvailable: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      {
+        id: '4',
+        title: 'World History Overview',
+        description: 'Journey through major historical events',
+        subject: 'social_studies',
+        topic: 'History',
+        gradeLevel: '9',
+        difficulty: 'medium',
+        contentType: 'video',
+        duration: 30,
+        language: 'English',
+        viewCount: 850,
+        rating: 4.7,
+        isOfflineAvailable: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
     ];
 
-    // Filter based on params
+    // Filter based on params - with null/undefined checks
     let filtered = sampleContent;
+    
+    if (params.query && params.query.trim()) {
+      const query = params.query.toLowerCase();
+      filtered = filtered.filter(item => {
+        const title = item.title || '';
+        const description = item.description || '';
+        const topic = item.topic || '';
+        return (
+          title.toLowerCase().includes(query) ||
+          description.toLowerCase().includes(query) ||
+          topic.toLowerCase().includes(query)
+        );
+      });
+    }
     
     if (params.subject) {
       filtered = filtered.filter(item => item.subject === params.subject);

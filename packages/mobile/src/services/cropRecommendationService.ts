@@ -3,26 +3,10 @@
  * Handles API calls for crop recommendations
  */
 
-import axios from 'axios';
+import apiClient from './api/client';
 import { CropRecommendationInput, CropRecommendationResponse } from '../types/cropRecommendation';
 
-const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000/api';
-
 class CropRecommendationService {
-  private getAuthToken(): string | null {
-    // In a real app, get token from secure storage
-    // For now, return a placeholder
-    return 'mock-token';
-  }
-
-  private getHeaders() {
-    const token = this.getAuthToken();
-    return {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-    };
-  }
-
   /**
    * Get crop recommendations based on farm conditions
    */
@@ -30,18 +14,19 @@ class CropRecommendationService {
     input: CropRecommendationInput
   ): Promise<CropRecommendationResponse> {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/crop-recommendation`,
-        input,
-        {
-          headers: this.getHeaders(),
-          timeout: 15000, // 15 seconds
-        }
+      const response = await apiClient.post<CropRecommendationResponse>(
+        '/api/agriculture/crop-recommendations',
+        input
       );
-      return response.data;
-    } catch (error) {
+
+      if (response.success && response.data) {
+        return response.data;
+      }
+
+      throw new Error(response.error || 'Failed to get crop recommendations');
+    } catch (error: any) {
       console.error('Error getting crop recommendations:', error);
-      throw error;
+      throw new Error(error.message || 'Failed to get crop recommendations');
     }
   }
 
@@ -50,13 +35,18 @@ class CropRecommendationService {
    */
   async getSupportedCrops(): Promise<any[]> {
     try {
-      const response = await axios.get(`${API_BASE_URL}/crop-recommendation/crops`, {
-        headers: this.getHeaders(),
-      });
-      return response.data.crops || [];
+      const response = await apiClient.get<{ crops: any[] }>(
+        '/api/agriculture/crops'
+      );
+
+      if (response.success && response.data) {
+        return response.data.crops || [];
+      }
+
+      return [];
     } catch (error) {
       console.error('Error fetching supported crops:', error);
-      throw error;
+      return [];
     }
   }
 }

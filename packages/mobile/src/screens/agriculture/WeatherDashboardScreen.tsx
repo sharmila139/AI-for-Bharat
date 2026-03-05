@@ -80,7 +80,8 @@ export const WeatherDashboardScreen: React.FC<WeatherDashboardProps> = ({
 
   useEffect(() => {
     loadWeatherData();
-  }, [location]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadWeatherData = async () => {
     try {

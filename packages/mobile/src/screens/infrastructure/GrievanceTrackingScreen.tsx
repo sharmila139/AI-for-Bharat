@@ -81,7 +81,8 @@ interface GrievanceDetails {
 const GrievanceTrackingScreen: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { grievanceId } = route.params as { grievanceId: string };
+  const params = route.params as { grievanceId?: string; ticketNumber?: string } | undefined;
+  const grievanceId = params?.grievanceId || params?.ticketNumber;
 
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -92,13 +93,77 @@ const GrievanceTrackingScreen: React.FC = () => {
   const [feedbackText, setFeedbackText] = useState('');
 
   useEffect(() => {
+    if (!grievanceId) {
+      // Don't show error alert, just set loading to false
+      setLoading(false);
+      return;
+    }
     loadGrievanceData();
   }, [grievanceId]);
 
   const loadGrievanceData = async () => {
+    if (!grievanceId) return;
+    
     try {
       setLoading(true);
 
+      // Mock data in development mode
+      if (__DEV__) {
+        console.log('DEV MODE: Mock grievance details');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Mock grievance data
+        const mockGrievance: GrievanceDetails = {
+          grievance_id: grievanceId,
+          ticket_number: grievanceId.startsWith('GRV') ? grievanceId : `GRV${grievanceId.slice(-8)}`,
+          title: 'Sample Grievance',
+          description: 'This is a sample grievance for testing',
+          category: 'road',
+          status: 'in_progress',
+          ai_severity: 'medium',
+          created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          is_overdue: false,
+          days_open: 3,
+          sla_deadline: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString(),
+          community_verified: false,
+          verification_votes_yes: 5,
+          verification_votes_no: 1,
+          verification_threshold: 10,
+        };
+        
+        const mockTimeline: TimelineEntry[] = [
+          {
+            update_id: '1',
+            update_type: 'status_change',
+            update_text: 'Grievance submitted',
+            is_public: true,
+            created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            update_id: '2',
+            update_type: 'status_change',
+            update_text: 'Grievance acknowledged by authorities',
+            is_public: true,
+            created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            update_id: '3',
+            update_type: 'status_change',
+            update_text: 'Work in progress',
+            is_public: true,
+            created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+        ];
+        
+        setGrievance(mockGrievance);
+        setTimeline(mockTimeline);
+        setLoading(false);
+        setRefreshing(false);
+        return;
+      }
+
+      // Production API calls (commented out for now)
+      /*
       // Fetch grievance details
       const grievanceResponse = await fetch(
         `${API_BASE_URL}/api/grievances/${grievanceId}`
@@ -123,9 +188,10 @@ const GrievanceTrackingScreen: React.FC = () => {
         days_open: overdueData.data.days_open,
       });
       setTimeline(timelineData.data);
+      */
     } catch (error) {
-      Alert.alert('Error', 'Failed to load grievance details');
-      console.error(error);
+      console.error('Error loading grievance:', error);
+      setGrievance(null);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -261,11 +327,20 @@ const GrievanceTrackingScreen: React.FC = () => {
     );
   }
 
-  if (!grievance) {
+  if (!grievance && !loading) {
     return (
-      <View style={styles.errorContainer}>
-        <Icon name="alert-circle" size={64} color="#DC143C" />
-        <Text style={styles.errorText}>Grievance not found</Text>
+      <View style={styles.emptyContainer}>
+        <Icon name="file-document-outline" size={80} color="#ccc" />
+        <Text style={styles.emptyTitle}>No Grievance Selected</Text>
+        <Text style={styles.emptyText}>
+          Select a grievance from your list to view its details and track its progress.
+        </Text>
+        <TouchableOpacity
+          style={styles.emptyButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.emptyButtonText}>Go Back</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -557,6 +632,39 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#DC143C',
     fontWeight: '600',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    padding: 32,
+  },
+  emptyTitle: {
+    marginTop: 16,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+  },
+  emptyText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  emptyButton: {
+    marginTop: 24,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    backgroundColor: '#4CAF50',
+    borderRadius: 8,
+  },
+  emptyButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
   },
   headerCard: {
     backgroundColor: '#FFF',

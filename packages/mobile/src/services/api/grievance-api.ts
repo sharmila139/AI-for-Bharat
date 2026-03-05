@@ -104,6 +104,25 @@ export interface DuplicateGrievance {
 export const submitGrievance = async (
   input: GrievanceSubmissionInput
 ): Promise<GrievanceSubmissionResult> => {
+  // Mock submission in development mode
+  if (__DEV__) {
+    console.log('DEV MODE: Mock grievance submission');
+    await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
+    
+    const ticketNumber = `GRV${Date.now().toString().slice(-8)}`;
+    return {
+      grievanceId: `grv_${Date.now()}`,
+      ticketNumber,
+      category: input.category || 'other',
+      severity: 'medium',
+      assignedAuthority: 'Municipal Corporation',
+      slaDeadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      isDuplicate: false,
+      photoUrls: input.photos.map(p => p.uri),
+      estimatedResolutionDays: 7,
+    };
+  }
+
   const formData = new FormData();
   
   // Add text fields
@@ -165,6 +184,43 @@ export const classifyGrievancePhoto = async (
   photoUri: string,
   description: string
 ): Promise<AIClassificationResult> => {
+  // Mock classification in development mode
+  if (__DEV__) {
+    console.log('DEV MODE: Mock AI classification');
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate AI processing
+    
+    // Simple keyword-based classification for demo
+    const lowerDesc = description.toLowerCase();
+    let category: GrievanceCategory = 'other';
+    let severity: SeverityLevel = 'medium';
+    let confidence = 75;
+    
+    if (lowerDesc.includes('road') || lowerDesc.includes('pothole') || lowerDesc.includes('street')) {
+      category = 'road';
+      confidence = 85;
+    } else if (lowerDesc.includes('water') || lowerDesc.includes('pipe') || lowerDesc.includes('leak')) {
+      category = 'water';
+      confidence = 80;
+    } else if (lowerDesc.includes('electricity') || lowerDesc.includes('power') || lowerDesc.includes('light')) {
+      category = 'electricity';
+      confidence = 82;
+    } else if (lowerDesc.includes('garbage') || lowerDesc.includes('waste') || lowerDesc.includes('sanitation')) {
+      category = 'sanitation';
+      confidence = 78;
+    }
+    
+    if (lowerDesc.includes('urgent') || lowerDesc.includes('dangerous') || lowerDesc.includes('critical')) {
+      severity = 'high';
+    }
+    
+    return {
+      category,
+      confidence,
+      severity,
+      keywords: lowerDesc.split(' ').slice(0, 5),
+    };
+  }
+
   const formData = new FormData();
   
   formData.append('photo', {
@@ -275,6 +331,67 @@ export interface GrievanceSearchResult {
 export const searchGrievances = async (
   params: GrievanceSearchParams
 ): Promise<GrievanceSearchResult> => {
+  // Mock data in development mode
+  if (__DEV__) {
+    console.log('DEV MODE: Mock grievance search');
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Return empty list for "my grievances" to show empty state
+    if (params.myGrievances) {
+      return {
+        items: [],
+        total: 0,
+        page: 1,
+        totalPages: 0,
+        hasMore: false,
+      };
+    }
+    
+    // Sample grievances for general search
+    const mockGrievances: GrievanceListItem[] = [
+      {
+        grievanceId: 'grv_1',
+        ticketNumber: 'GRV12345678',
+        title: 'Large pothole on Main Road',
+        description: 'Dangerous pothole causing accidents',
+        category: 'road',
+        status: 'in_progress',
+        severity: 'high',
+        photos: [],
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        slaDeadline: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString(),
+        isOverdue: false,
+        daysOpen: 3,
+        isAnonymous: false,
+      },
+      {
+        grievanceId: 'grv_2',
+        ticketNumber: 'GRV12345679',
+        title: 'Water supply disruption',
+        description: 'No water for 2 days in our area',
+        category: 'water',
+        status: 'acknowledged',
+        severity: 'medium',
+        photos: [],
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        slaDeadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+        isOverdue: false,
+        daysOpen: 2,
+        isAnonymous: true,
+      },
+    ];
+    
+    return {
+      items: mockGrievances,
+      total: mockGrievances.length,
+      page: 1,
+      totalPages: 1,
+      hasMore: false,
+    };
+  }
+
   const response = await api.get('/grievances/search', {
     params: {
       query: params.query,

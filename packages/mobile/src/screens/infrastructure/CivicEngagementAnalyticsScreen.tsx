@@ -809,3 +809,5 @@ const styles = StyleSheet.create({
 });
 
 export default CivicEngagementAnalyticsScreen;
+
+export default CivicEngagementAnalyticsScreen;

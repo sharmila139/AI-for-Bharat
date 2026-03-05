@@ -704,6 +704,220 @@ Translation:`;
 }
 
 // ============================================
+// Accessibility Handlers (Section 27)
+// ============================================
+
+/**
+ * Handle text-to-speech conversion
+ */
+async function handleTextToSpeech(body) {
+    try {
+        const { text, language = 'en', voice = 'neutral' } = body;
+        
+        if (!text) {
+            return createResponse(400, {
+                success: false,
+                error: 'Text is required'
+            });
+        }
+        
+        // For now, return metadata for client-side TTS
+        // In production, could use Amazon Polly for server-side TTS
+        return createResponse(200, {
+            success: true,
+            data: {
+                text,
+                language,
+                voice,
+                audioUrl: null, // Would be Polly URL in production
+                duration: Math.ceil(text.length / 15), // Rough estimate in seconds
+                instructions: 'Use client-side Web Speech API or React Native TTS'
+            }
+        });
+    } catch (error) {
+        console.error('Text-to-speech error:', error);
+        return createResponse(500, {
+            success: false,
+            error: error.message
+        });
+    }
+}
+
+/**
+ * Handle voice command processing
+ */
+async function handleVoiceCommand(body) {
+    try {
+        const { command, context = {} } = body;
+        
+        if (!command) {
+            return createResponse(400, {
+                success: false,
+                error: 'Voice command is required'
+            });
+        }
+        
+        // Use Bedrock to interpret voice command
+        const prompt = `You are a voice command interpreter for RuralConnect AI app.
+        
+User said: "${command}"
+Context: ${JSON.stringify(context)}
+
+Interpret this command and return a JSON response with:
+- action: the action to perform (navigate, submit, search, read, help)
+- target: what to act on (screen name, form field, content)
+- parameters: any additional parameters
+- confidence: confidence level (0-100)
+
+Examples:
+"Open health module" -> {"action": "navigate", "target": "health", "confidence": 95}
+"Check symptoms for fever" -> {"action": "search", "target": "symptoms", "parameters": {"query": "fever"}, "confidence": 90}
+"Submit grievance" -> {"action": "submit", "target": "grievance", "confidence": 85}
+
+Return only valid JSON.`;
+
+        const result = await callBedrock(prompt);
+        
+        if (!result.success) {
+            // Fallback to simple pattern matching
+            const commandLower = command.toLowerCase();
+            let action = 'unknown';
+            let target = '';
+            let confidence = 50;
+            
+            if (commandLower.includes('open') || commandLower.includes('go to')) {
+                action = 'navigate';
+                if (commandLower.includes('health')) target = 'health';
+                else if (commandLower.includes('agriculture') || commandLower.includes('farm')) target = 'agriculture';
+                else if (commandLower.includes('education') || commandLower.includes('learn')) target = 'education';
+                else if (commandLower.includes('infrastructure') || commandLower.includes('grievance')) target = 'infrastructure';
+                confidence = 70;
+            } else if (commandLower.includes('submit')) {
+                action = 'submit';
+                target = 'form';
+                confidence = 60;
+            } else if (commandLower.includes('search') || commandLower.includes('find')) {
+                action = 'search';
+                confidence = 65;
+            } else if (commandLower.includes('read') || commandLower.includes('tell me')) {
+                action = 'read';
+                confidence = 70;
+            } else if (commandLower.includes('help')) {
+                action = 'help';
+                confidence = 90;
+            }
+            
+            return createResponse(200, {
+                success: true,
+                data: {
+                    command,
+                    interpretation: {
+                        action,
+                        target,
+                        parameters: {},
+                        confidence
+                    },
+                    fallback: true
+                }
+            });
+        }
+        
+        // Parse AI response
+        try {
+            const interpretation = JSON.parse(result.data);
+            return createResponse(200, {
+                success: true,
+                data: {
+                    command,
+                    interpretation,
+                    model: result.model
+                }
+            });
+        } catch (parseError) {
+            // If AI didn't return valid JSON, extract from text
+            return createResponse(200, {
+                success: true,
+                data: {
+                    command,
+                    interpretation: {
+                        action: 'unknown',
+                        target: '',
+                        parameters: {},
+                        confidence: 30,
+                        rawResponse: result.data
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Voice command error:', error);
+        return createResponse(500, {
+            success: false,
+            error: error.message
+        });
+    }
+}
+
+/**
+ * Get accessibility settings and capabilities
+ */
+async function handleGetAccessibilitySettings() {
+    try {
+        return createResponse(200, {
+            success: true,
+            data: {
+                features: {
+                    textToSpeech: {
+                        enabled: true,
+                        languages: ['en', 'hi', 'ta', 'te', 'bn', 'mr', 'gu', 'kn', 'ml', 'pa', 'or', 'as', 'ur'],
+                        voices: ['neutral', 'male', 'female']
+                    },
+                    voiceCommands: {
+                        enabled: true,
+                        supportedCommands: [
+                            'navigate', 'submit', 'search', 'read', 'help', 'back', 'home'
+                        ]
+                    },
+                    screenReader: {
+                        enabled: true,
+                        compatible: true
+                    },
+                    highContrast: {
+                        enabled: true,
+                        themes: ['default', 'high-contrast', 'dark', 'light']
+                    },
+                    fontSize: {
+                        enabled: true,
+                        sizes: ['small', 'medium', 'large', 'extra-large'],
+                        default: 'medium'
+                    },
+                    iconNavigation: {
+                        enabled: true,
+                        description: 'Icon-based navigation for low literacy users'
+                    },
+                    audioInstructions: {
+                        enabled: true,
+                        description: 'Audio guidance for complex tasks'
+                    }
+                },
+                recommendations: {
+                    lowLiteracy: ['iconNavigation', 'voiceCommands', 'audioInstructions'],
+                    visualImpairment: ['screenReader', 'textToSpeech', 'highContrast', 'fontSize'],
+                    hearingImpairment: ['textCaptions', 'visualAlerts'],
+                    motorImpairment: ['voiceCommands', 'largeButtons', 'simplifiedNavigation']
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Get accessibility settings error:', error);
+        return createResponse(500, {
+            success: false,
+            error: error.message
+        });
+    }
+}
+
+// ============================================
 // Main Handler
 // ============================================
 
@@ -784,6 +998,19 @@ exports.handler = async (event) => {
             const langCode = pathParts[2]; // e.g., 'hi'
             const module = pathParts[3]; // e.g., 'agriculture' (optional)
             return await handleGetTranslations(langCode, module);
+        }
+        
+        // Accessibility endpoints (Section 27)
+        if (path.includes('/accessibility/text-to-speech') && method === 'POST') {
+            return await handleTextToSpeech(body);
+        }
+        
+        if (path.includes('/accessibility/voice-command') && method === 'POST') {
+            return await handleVoiceCommand(body);
+        }
+        
+        if (path.includes('/accessibility/settings') && method === 'GET') {
+            return await handleGetAccessibilitySettings();
         }
         
         // 404

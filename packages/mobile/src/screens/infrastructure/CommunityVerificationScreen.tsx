@@ -1343,3 +1343,5 @@ const styles = StyleSheet.create({
 });
 
 export default CommunityVerificationScreen;
+
+export default CommunityVerificationScreen;

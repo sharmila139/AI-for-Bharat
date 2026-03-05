@@ -1,13 +1,46 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../config';
 import './Health.css';
+
+interface SymptomAssessment {
+  severity: string;
+  possibleConditions: string[];
+  firstAidSteps: string[];
+  seekHelpIf: string;
+  recommendedRemedies: string[];
+}
 
 export default function Health() {
   const [symptom, setSymptom] = useState('');
-  const [showResults, setShowResults] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [assessment, setAssessment] = useState<SymptomAssessment | null>(null);
+  const [error, setError] = useState('');
 
-  const handleSymptomCheck = () => {
-    if (symptom.trim()) {
-      setShowResults(true);
+  const handleSymptomCheck = async () => {
+    if (!symptom.trim()) return;
+    
+    setLoading(true);
+    setError('');
+    setAssessment(null);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/health/symptom-check`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symptoms: symptom })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.data.assessment) {
+        setAssessment(data.data.assessment);
+      } else {
+        setError('Failed to analyze symptoms. Please try again.');
+      }
+    } catch (err) {
+      setError('Error connecting to API. Please check your connection.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,24 +109,67 @@ export default function Health() {
           <button
             className="button button-primary"
             onClick={handleSymptomCheck}
-            disabled={!symptom.trim()}
+            disabled={!symptom.trim() || loading}
           >
-            Check Symptoms
+            {loading ? 'Analyzing...' : 'Check Symptoms'}
           </button>
 
-          {showResults && (
+          {error && (
+            <div className="alert-box error" style={{ marginTop: '20px' }}>
+              {error}
+            </div>
+          )}
+
+          {assessment && (
             <div className="symptom-results">
               <div className="alert-box warning">
                 <strong>⚠️ Important:</strong> This is for informational purposes only.
                 For serious symptoms, please consult a healthcare professional immediately.
               </div>
-              <h3>Recommended Actions</h3>
-              <ul className="action-list">
-                <li>✓ Rest and stay hydrated</li>
-                <li>✓ Monitor your temperature</li>
-                <li>✓ Try natural remedies below</li>
-                <li>✓ Seek medical help if symptoms worsen</li>
-              </ul>
+              
+              <div className="assessment-section">
+                <h3>Severity: <span className={`severity-${assessment.severity.toLowerCase()}`}>{assessment.severity}</span></h3>
+              </div>
+
+              {assessment.possibleConditions && assessment.possibleConditions.length > 0 && (
+                <div className="assessment-section">
+                  <h3>Possible Conditions</h3>
+                  <ul className="condition-list">
+                    {assessment.possibleConditions.map((condition, i) => (
+                      <li key={i}>{condition}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {assessment.firstAidSteps && assessment.firstAidSteps.length > 0 && (
+                <div className="assessment-section">
+                  <h3>Recommended Actions</h3>
+                  <ul className="action-list">
+                    {assessment.firstAidSteps.map((step, i) => (
+                      <li key={i}>✓ {step}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {assessment.seekHelpIf && (
+                <div className="assessment-section">
+                  <h3>Seek Medical Help If:</h3>
+                  <p className="seek-help-text">{assessment.seekHelpIf}</p>
+                </div>
+              )}
+
+              {assessment.recommendedRemedies && assessment.recommendedRemedies.length > 0 && (
+                <div className="assessment-section">
+                  <h3>Recommended Natural Remedies</h3>
+                  <ul className="remedy-list">
+                    {assessment.recommendedRemedies.map((remedy, i) => (
+                      <li key={i}>{remedy}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
         </div>

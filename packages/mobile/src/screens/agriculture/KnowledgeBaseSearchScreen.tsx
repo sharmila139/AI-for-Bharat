@@ -16,12 +16,13 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import ArticleListItem from '../../components/knowledge-base/ArticleListItem';
-import FilterModal from '../../components/knowledge-base/FilterModal';
-import { searchArticles, getTrendingArticles } from '../../services/api/knowledge-base-api';
-import { useLanguage } from '../../contexts/LanguageContext';
-import { useVoiceSearch } from '../../hooks/useVoiceSearch';
+// Temporarily commented out until contexts are properly set up
+// import Icon from 'react-native-vector-icons/MaterialIcons';
+// import ArticleListItem from '../../components/knowledge-base/ArticleListItem';
+// import FilterModal from '../../components/knowledge-base/FilterModal';
+// import { searchArticles, getTrendingArticles } from '../../services/api/knowledge-base-api';
+// import { useLanguage } from '../../contexts/LanguageContext';
+// import { useVoiceSearch } from '../../hooks/useVoiceSearch';
 
 interface SearchFilters {
   category?: string;
@@ -32,13 +33,21 @@ interface SearchFilters {
   sort_by?: 'relevance' | 'rating' | 'date';
 }
 
+interface Article {
+  id: string;
+  title: string;
+  summary: string;
+  category: string;
+}
+
 export default function KnowledgeBaseSearchScreen() {
   const navigation = useNavigation();
-  const { currentLanguage, t } = useLanguage();
-  const { startVoiceSearch, isListening } = useVoiceSearch();
+  // Temporarily use hardcoded language until context is set up
+  const currentLanguage = 'en';
+  const t = (key: string) => key;
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
@@ -50,13 +59,45 @@ export default function KnowledgeBaseSearchScreen() {
   // Load trending articles on mount
   useEffect(() => {
     loadTrendingArticles();
-  }, [currentLanguage]);
+  }, []);
 
   const loadTrendingArticles = async () => {
     try {
       setLoading(true);
-      const trending = await getTrendingArticles(10, currentLanguage);
-      setArticles(trending);
+      // Mock data for development
+      const mockArticles: Article[] = [
+        {
+          id: '1',
+          title: 'Organic Pest Control Methods',
+          summary: 'Learn natural ways to protect your crops from pests',
+          category: 'Pest Management',
+        },
+        {
+          id: '2',
+          title: 'Water Conservation Techniques',
+          summary: 'Efficient irrigation methods for sustainable farming',
+          category: 'Water Management',
+        },
+        {
+          id: '3',
+          title: 'Crop Rotation Benefits',
+          summary: 'Improve soil health through strategic crop rotation',
+          category: 'Soil Health',
+        },
+        {
+          id: '4',
+          title: 'Composting Guide',
+          summary: 'Create nutrient-rich compost for your farm',
+          category: 'Soil Health',
+        },
+        {
+          id: '5',
+          title: 'Integrated Pest Management',
+          summary: 'Holistic approach to pest control',
+          category: 'Pest Management',
+        },
+      ];
+      setArticles(mockArticles);
       setShowTrending(true);
     } catch (error) {
       console.error('Error loading trending articles:', error);
@@ -75,14 +116,13 @@ export default function KnowledgeBaseSearchScreen() {
       setLoading(true);
       setShowTrending(false);
       
-      const results = await searchArticles({
-        query: searchQuery.trim(),
-        language: currentLanguage,
-        ...filters,
-        limit: 20,
-      });
+      // Mock search - filter articles by query
+      const filtered = articles.filter(article =>
+        article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        article.summary.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
-      setArticles(results);
+      setArticles(filtered.length > 0 ? filtered : articles);
     } catch (error) {
       console.error('Error searching articles:', error);
     } finally {
@@ -91,6 +131,9 @@ export default function KnowledgeBaseSearchScreen() {
   };
 
   const handleVoiceSearch = async () => {
+    // Temporarily disabled until voice search is set up
+    console.log('Voice search not yet implemented');
+    /*
     try {
       const voiceQuery = await startVoiceSearch();
       if (voiceQuery) {
@@ -101,6 +144,7 @@ export default function KnowledgeBaseSearchScreen() {
     } catch (error) {
       console.error('Voice search error:', error);
     }
+    */
   };
 
   const handleRefresh = useCallback(async () => {
@@ -121,17 +165,19 @@ export default function KnowledgeBaseSearchScreen() {
   };
 
   const handleArticlePress = (articleId: string) => {
-    navigation.navigate('ArticleDetail', { articleId });
+    // Temporarily disabled until ArticleDetail screen is fixed
+    console.log('Navigate to article:', articleId);
+    // navigation.navigate('ArticleDetail', { articleId });
   };
 
   const renderHeader = () => (
     <View style={styles.header}>
       <Text style={styles.title}>
-        {showTrending ? t('knowledge_base.trending') : t('knowledge_base.search_results')}
+        {showTrending ? 'Trending Articles' : 'Search Results'}
       </Text>
       {!showTrending && (
         <Text style={styles.resultCount}>
-          {articles.length} {t('knowledge_base.articles_found')}
+          {articles.length} articles found
         </Text>
       )}
     </View>
@@ -139,14 +185,14 @@ export default function KnowledgeBaseSearchScreen() {
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
-      <Icon name="search-off" size={64} color="#ccc" />
+      <Text style={styles.emptyIcon}>🔍</Text>
       <Text style={styles.emptyText}>
         {showTrending 
-          ? t('knowledge_base.no_trending') 
-          : t('knowledge_base.no_results')}
+          ? 'No trending articles available' 
+          : 'No results found'}
       </Text>
       <Text style={styles.emptySubtext}>
-        {t('knowledge_base.try_different_search')}
+        Try a different search term
       </Text>
     </View>
   );
@@ -156,10 +202,10 @@ export default function KnowledgeBaseSearchScreen() {
       {/* Search Bar */}
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
-          <Icon name="search" size={24} color="#666" style={styles.searchIcon} />
+          <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
             style={styles.searchInput}
-            placeholder={t('knowledge_base.search_placeholder')}
+            placeholder="Search sustainable farming practices..."
             value={searchQuery}
             onChangeText={setSearchQuery}
             onSubmitEditing={handleSearch}
@@ -167,28 +213,23 @@ export default function KnowledgeBaseSearchScreen() {
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Icon name="close" size={20} color="#666" />
+              <Text style={styles.clearIcon}>✕</Text>
             </TouchableOpacity>
           )}
         </View>
 
         <TouchableOpacity
-          style={[styles.voiceButton, isListening && styles.voiceButtonActive]}
+          style={styles.voiceButton}
           onPress={handleVoiceSearch}
-          disabled={isListening}
         >
-          <Icon 
-            name={isListening ? "mic" : "mic-none"} 
-            size={24} 
-            color={isListening ? "#fff" : "#007AFF"} 
-          />
+          <Text style={styles.voiceIcon}>🎤</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.filterButton}
           onPress={() => setFilterModalVisible(true)}
         >
-          <Icon name="filter-list" size={24} color="#007AFF" />
+          <Text style={styles.filterIcon}>⚙️</Text>
           {Object.keys(filters).length > 1 && (
             <View style={styles.filterBadge}>
               <Text style={styles.filterBadgeText}>
@@ -202,12 +243,18 @@ export default function KnowledgeBaseSearchScreen() {
       {/* Articles List */}
       <FlatList
         data={articles}
-        keyExtractor={(item) => item.article_id}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ArticleListItem
-            article={item}
-            onPress={() => handleArticlePress(item.article_id)}
-          />
+          <TouchableOpacity
+            style={styles.articleCard}
+            onPress={() => handleArticlePress(item.id)}
+          >
+            <Text style={styles.articleCategory}>{item.category}</Text>
+            <Text style={styles.articleTitle}>{item.title}</Text>
+            <Text style={styles.articleSummary} numberOfLines={2}>
+              {item.summary}
+            </Text>
+          </TouchableOpacity>
         )}
         ListHeaderComponent={renderHeader}
         ListEmptyComponent={!loading && renderEmptyState()}
@@ -220,17 +267,9 @@ export default function KnowledgeBaseSearchScreen() {
       {/* Loading Indicator */}
       {loading && !refreshing && (
         <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#007AFF" />
+          <ActivityIndicator size="large" color="#4CAF50" />
         </View>
       )}
-
-      {/* Filter Modal */}
-      <FilterModal
-        visible={filterModalVisible}
-        filters={filters}
-        onApply={handleFilterApply}
-        onClose={() => setFilterModalVisible(false)}
-      />
     </View>
   );
 }
@@ -269,6 +308,11 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     marginRight: 8,
+    fontSize: 20,
+  },
+  clearIcon: {
+    fontSize: 18,
+    color: '#666',
   },
   searchInput: {
     flex: 1,
@@ -285,8 +329,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 8,
   },
-  voiceButtonActive: {
-    backgroundColor: '#007AFF',
+  voiceIcon: {
+    fontSize: 20,
   },
   filterButton: {
     width: 44,
@@ -296,6 +340,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
+  },
+  filterIcon: {
+    fontSize: 20,
   },
   filterBadge: {
     position: 'absolute',
@@ -333,12 +380,46 @@ const styles = StyleSheet.create({
   listContent: {
     flexGrow: 1,
   },
+  articleCard: {
+    backgroundColor: '#fff',
+    padding: 16,
+    marginHorizontal: 12,
+    marginVertical: 6,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#4CAF50',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  articleCategory: {
+    fontSize: 12,
+    color: '#4CAF50',
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  articleTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  articleSummary: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
+  },
   emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 32,
     minHeight: 300,
+  },
+  emptyIcon: {
+    fontSize: 64,
   },
   emptyText: {
     fontSize: 18,

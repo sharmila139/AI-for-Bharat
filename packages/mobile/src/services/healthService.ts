@@ -3,7 +3,7 @@
  * API integration for symptom assessment and first aid
  */
 
-import apiClient from '../config/api';
+import apiClient from './api/client';
 import {
   SymptomAssessmentInput,
   SymptomAssessmentResult,
@@ -22,19 +22,80 @@ interface ApiResponse<T> {
   message?: string;
 }
 
+interface SymptomCheckResponse {
+  assessment: {
+    severity: string;
+    possibleConditions: string[];
+    firstAidSteps: string[];
+    seekHelpIf: string;
+    recommendedRemedies: string[];
+  };
+}
+
 // ============================================================================
 // HEALTH SERVICE CLASS
 // ============================================================================
 
 class HealthService {
   /**
-   * Assess symptoms and get first aid recommendations
+   * Check symptoms using simple text input (matching web app)
+   */
+  async checkSymptoms(symptoms: string): Promise<SymptomCheckResponse> {
+    try {
+      const response = await apiClient.post<SymptomCheckResponse>(
+        '/api/health/symptom-check',
+        { symptoms }
+      );
+
+      if (response.success && response.data) {
+        return response.data;
+      }
+
+      throw new Error(response.error || 'Failed to check symptoms');
+    } catch (error: any) {
+      console.error('Error checking symptoms:', error);
+      
+      // Handle offline mode - return basic assessment
+      if (error.message?.includes('Network') || error.message?.includes('timeout')) {
+        return this.getOfflineSymptomCheck(symptoms);
+      }
+
+      throw new Error(
+        error.message || 'Failed to check symptoms. Please check your connection and try again.'
+      );
+    }
+  }
+
+  /**
+   * Get natural remedies
+   */
+  async getRemedies(search?: string): Promise<any[]> {
+    try {
+      const endpoint = search 
+        ? `/api/health/remedies?search=${encodeURIComponent(search)}`
+        : '/api/health/remedies';
+      
+      const response = await apiClient.get<{ remedies: any[] }>(endpoint);
+
+      if (response.success && response.data) {
+        return response.data.remedies || [];
+      }
+
+      return this.getDefaultRemedies();
+    } catch (error) {
+      console.error('Error getting remedies:', error);
+      return this.getDefaultRemedies();
+    }
+  }
+
+  /**
+   * Assess symptoms and get first aid recommendations (advanced version)
    */
   async assessSymptoms(
     symptoms: SymptomInput[],
     patientInfo: PatientInfo,
     inputMethod: 'voice' | 'text' | 'body_map',
-    userId: string = 'user-001' // TODO: Get from auth context
+    userId: string = 'user-001'
   ): Promise<SymptomAssessmentResult> {
     try {
       const input: SymptomAssessmentInput = {
@@ -49,11 +110,11 @@ class HealthService {
         input
       );
 
-      if (response.data.success && response.data.data) {
-        return response.data.data;
+      if (response.success && response.data) {
+        return response.data;
       }
 
-      throw new Error(response.data.error || 'Failed to assess symptoms');
+      throw new Error(response.error || 'Failed to assess symptoms');
     } catch (error: any) {
       console.error('Error assessing symptoms:', error);
       
@@ -84,8 +145,8 @@ class HealthService {
         { outcome, notes }
       );
 
-      if (!response.data.success) {
-        throw new Error(response.data.error || 'Failed to record outcome');
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to record outcome');
       }
     } catch (error: any) {
       console.error('Error recording outcome:', error);
@@ -107,14 +168,14 @@ class HealthService {
       
       const response = await apiClient.get<ApiResponse<any>>(
         '/health/emergency-contacts',
-        { params }
+        params
       );
 
-      if (response.data.success && response.data.data) {
-        return response.data.data;
+      if (response.success && response.data) {
+        return response.data;
       }
 
-      throw new Error(response.data.error || 'Failed to get emergency contacts');
+      throw new Error(response.error || 'Failed to get emergency contacts');
     } catch (error: any) {
       console.error('Error getting emergency contacts:', error);
       
@@ -127,6 +188,66 @@ class HealthService {
         childHelpline: '1098',
       };
     }
+  }
+
+  /**
+   * Get offline symptom check (fallback when no internet)
+   */
+  private getOfflineSymptomCheck(symptoms: string): SymptomCheckResponse {
+    const lowerSymptoms = symptoms.toLowerCase();
+    
+    let severity = 'Moderate';
+    let possibleConditions = ['Common illness'];
+    let firstAidSteps = [
+      'Rest in a comfortable position',
+      'Stay hydrated',
+      'Monitor symptoms for changes',
+    ];
+    let seekHelpIf = 'Symptoms worsen or persist for more than 24 hours';
+    let recommendedRemedies = ['Ginger tea', 'Turmeric milk'];
+
+    // Check for critical symptoms
+    if (lowerSymptoms.includes('chest pain') || 
+        lowerSymptoms.includes('difficulty breathing') ||
+        lowerSymptoms.includes('severe bleeding')) {
+      severity = 'Critical';
+      possibleConditions = ['Medical Emergency'];
+      firstAidSteps = [
+        'Call emergency services immediately (108)',
+        'Keep the person calm and comfortable',
+        'Do not give anything to eat or drink',
+      ];
+      seekHelpIf = 'Seek immediate medical attention';
+      recommendedRemedies = [];
+    } else if (lowerSymptoms.includes('fever')) {
+      severity = 'Moderate';
+      possibleConditions = ['Fever', 'Viral infection'];
+      firstAidSteps = [
+        'Rest and stay hydrated',
+        'Take fever-reducing medication if needed',
+        'Use cool compresses',
+      ];
+      recommendedRemedies = ['Tulsi leaves tea', 'Ginger tea'];
+    } else if (lowerSymptoms.includes('headache')) {
+      severity = 'Mild';
+      possibleConditions = ['Tension headache', 'Dehydration'];
+      firstAidSteps = [
+        'Rest in a quiet, dark room',
+        'Drink plenty of water',
+        'Apply cold compress to forehead',
+      ];
+      recommendedRemedies = ['Ginger tea', 'Peppermint oil'];
+    }
+
+    return {
+      assessment: {
+        severity,
+        possibleConditions,
+        firstAidSteps,
+        seekHelpIf,
+        recommendedRemedies,
+      },
+    };
   }
 
   /**
@@ -208,6 +329,35 @@ class HealthService {
           }
         : undefined,
     };
+  }
+
+  /**
+   * Get default remedies (offline fallback)
+   */
+  private getDefaultRemedies() {
+    return [
+      {
+        name: 'Ginger Tea',
+        condition: 'Cold & Cough',
+        efficacy: 92,
+        preparation: 'Boil fresh ginger in water for 10 minutes',
+        benefits: ['Reduces inflammation', 'Soothes throat', 'Boosts immunity'],
+      },
+      {
+        name: 'Turmeric Milk',
+        condition: 'Joint Pain',
+        efficacy: 88,
+        preparation: 'Mix turmeric powder in warm milk',
+        benefits: ['Anti-inflammatory', 'Pain relief', 'Better sleep'],
+      },
+      {
+        name: 'Tulsi Leaves',
+        condition: 'Fever',
+        efficacy: 85,
+        preparation: 'Boil tulsi leaves in water and drink',
+        benefits: ['Reduces fever', 'Antibacterial', 'Boosts immunity'],
+      },
+    ];
   }
 
   /**

@@ -565,3 +565,5 @@ const styles = StyleSheet.create({
 });
 
 export default PollDetailScreen;
+
+export default PollDetailScreen;

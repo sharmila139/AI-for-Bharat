@@ -136,6 +136,27 @@ class SoilAnalysisService {
     requirements: QualityRequirements;
     guidelines: string[];
   }> {
+    // Mock data for development
+    if (__DEV__) {
+      return {
+        requirements: {
+          minWidth: 800,
+          minHeight: 600,
+          maxFileSize: 5242880, // 5MB
+          minFileSize: 10240, // 10KB
+          acceptedFormats: ['image/jpeg', 'image/jpg', 'image/png'],
+          minQualityScore: 0.7,
+        },
+        guidelines: [
+          'Take photo in good natural lighting',
+          'Ensure soil is visible and in focus',
+          'Avoid shadows and glare',
+          'Include a reference object for scale',
+          'Capture from directly above the soil',
+        ],
+      };
+    }
+
     try {
       const response = await axios.get(
         `${API_BASE_URL}/agriculture/soil/quality-requirements`,

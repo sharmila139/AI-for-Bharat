@@ -886,3 +886,5 @@ const styles = StyleSheet.create({
 });
 
 export default PollListScreen;
+
+export default PollListScreen;

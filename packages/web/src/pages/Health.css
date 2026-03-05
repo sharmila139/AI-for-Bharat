@@ -147,3 +147,66 @@
 .health-info h3 {
   color: #ef4444;
 }
+
+
+/* Assessment Results */
+.assessment-section {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.assessment-section h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.severity-low {
+  color: #28a745;
+}
+
+.severity-medium {
+  color: #ffc107;
+}
+
+.severity-high {
+  color: #fd7e14;
+}
+
+.severity-critical {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.condition-list,
+.action-list,
+.remedy-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.condition-list li,
+.action-list li,
+.remedy-list li {
+  padding: 8px 12px;
+  margin: 5px 0;
+  background: white;
+  border-radius: 5px;
+  border-left: 3px solid #667eea;
+}
+
+.seek-help-text {
+  padding: 10px;
+  background: #fff3cd;
+  border-left: 3px solid #ffc107;
+  border-radius: 5px;
+  color: #856404;
+}
+
+.alert-box.error {
+  background: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}

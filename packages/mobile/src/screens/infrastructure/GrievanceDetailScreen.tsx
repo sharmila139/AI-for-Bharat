@@ -1317,3 +1317,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 });
+
+export default GrievanceDetailScreen;

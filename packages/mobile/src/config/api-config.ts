@@ -2,8 +2,7 @@
  * API Configuration
  */
 
-// TODO: Update with actual API base URL
-export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
+export const API_BASE_URL = 'https://q5hy2fwp3i.execute-api.us-east-1.amazonaws.com';
 
 export const API_TIMEOUT = 30000; // 30 seconds
 

@@ -915,3 +915,5 @@ const styles = StyleSheet.create({
 });
 
 export default LearningPathScreen;
+
+export default LearningPathScreen;

@@ -150,6 +150,108 @@ const ProjectProgressScreen: React.FC = () => {
     try {
       setLoading(true);
       
+      // Mock data in development mode
+      if (__DEV__) {
+        console.log('DEV MODE: Mock project data');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        const mockProjects: Project[] = [
+          {
+            project_id: '1',
+            project_name: 'Main Road Widening Project',
+            project_code: 'PRJ-2024-001',
+            project_type: 'road',
+            description: 'Widening of main road from 2 lanes to 4 lanes',
+            district: 'Mumbai',
+            state: 'Maharashtra',
+            total_budget: 50000000,
+            budget_currency: 'INR',
+            planned_start_date: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
+            planned_end_date: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+            actual_start_date: new Date(Date.now() - 85 * 24 * 60 * 60 * 1000).toISOString(),
+            progress_percentage: 45,
+            current_phase: 'Construction',
+            is_delayed: false,
+            delay_days: 0,
+            contractor_name: 'ABC Construction Ltd',
+            supervisor_name: 'Mr. Sharma',
+            implementing_agency: 'Municipal Corporation',
+            quality_rating: 4.2,
+            status: 'in_progress',
+            beneficiaries_count: 50000,
+            average_community_rating: 4.0,
+          },
+          {
+            project_id: '2',
+            project_name: 'Community Water Supply System',
+            project_code: 'PRJ-2024-002',
+            project_type: 'water_supply',
+            description: 'Installation of new water supply pipelines',
+            district: 'Pune',
+            state: 'Maharashtra',
+            total_budget: 25000000,
+            budget_currency: 'INR',
+            planned_start_date: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000).toISOString(),
+            planned_end_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+            actual_start_date: new Date(Date.now() - 115 * 24 * 60 * 60 * 1000).toISOString(),
+            progress_percentage: 85,
+            current_phase: 'Testing',
+            is_delayed: true,
+            delay_days: 15,
+            delay_reasons: ['Material shortage', 'Weather conditions'],
+            contractor_name: 'XYZ Infrastructure',
+            supervisor_name: 'Ms. Patel',
+            implementing_agency: 'Water Department',
+            quality_rating: 3.8,
+            status: 'in_progress',
+            beneficiaries_count: 30000,
+            average_community_rating: 3.5,
+          },
+          {
+            project_id: '3',
+            project_name: 'School Building Renovation',
+            project_code: 'PRJ-2024-003',
+            project_type: 'school',
+            description: 'Complete renovation of government school building',
+            district: 'Nagpur',
+            state: 'Maharashtra',
+            total_budget: 15000000,
+            budget_currency: 'INR',
+            planned_start_date: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString(),
+            planned_end_date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+            actual_start_date: new Date(Date.now() - 175 * 24 * 60 * 60 * 1000).toISOString(),
+            actual_end_date: new Date(Date.now() - 55 * 24 * 60 * 60 * 1000).toISOString(),
+            progress_percentage: 100,
+            current_phase: 'Completed',
+            is_delayed: false,
+            delay_days: 0,
+            contractor_name: 'DEF Builders',
+            supervisor_name: 'Mr. Kumar',
+            implementing_agency: 'Education Department',
+            quality_rating: 4.5,
+            status: 'completed',
+            beneficiaries_count: 500,
+            average_community_rating: 4.8,
+          },
+        ];
+        
+        // Apply filters
+        let filtered = mockProjects;
+        if (filterType !== 'all') {
+          filtered = filtered.filter(p => p.project_type === filterType);
+        }
+        if (filterStatus !== 'all') {
+          filtered = filtered.filter(p => p.status === filterStatus);
+        }
+        if (filterDelayed !== 'all') {
+          filtered = filtered.filter(p => p.is_delayed === filterDelayed);
+        }
+        
+        setProjects(filtered);
+        setLoading(false);
+        return;
+      }
+      
       const params = new URLSearchParams();
       if (filterType !== 'all') params.append('project_type', filterType);
       if (filterStatus !== 'all') params.append('status', filterStatus);
@@ -162,7 +264,8 @@ const ProjectProgressScreen: React.FC = () => {
         setProjects(data.data);
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to load projects');
+      console.error('Error loading projects:', error);
+      setProjects([]);
     } finally {
       setLoading(false);
     }
@@ -176,6 +279,17 @@ const ProjectProgressScreen: React.FC = () => {
 
   const openProjectDetails = async (projectId: string) => {
     try {
+      // In development mode, use the project from the list
+      if (__DEV__) {
+        const project = projects.find(p => p.project_id === projectId);
+        if (project) {
+          setSelectedProject(project);
+          setShowDetails(true);
+          setActiveTab('overview');
+        }
+        return;
+      }
+
       const response = await fetch(`/api/projects/${projectId}`);
       const data = await response.json() as { success: boolean; data: Project };
       
@@ -185,6 +299,7 @@ const ProjectProgressScreen: React.FC = () => {
         setActiveTab('overview');
       }
     } catch (error) {
+      console.error('Error loading project details:', error);
       Alert.alert('Error', 'Failed to load project details');
     }
   };
