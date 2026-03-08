@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, View, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useTranslation } from 'react-i18next';
 import { MainTabParamList } from './types';
 
 // Import screens
@@ -10,6 +11,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import AppSettingsScreen from '../screens/AppSettingsScreen';
 import AboutScreen from '../screens/AboutScreen';
+import LanguageSettingsScreen from '../screens/LanguageSettingsScreen';
 
 // Import navigators
 import AgricultureNavigator from './AgricultureNavigator';
@@ -22,6 +24,8 @@ const Stack = createStackNavigator<MainTabParamList>();
 
 // Tab Navigator Component
 const TabNavigator: React.FC = () => {
+  const { t } = useTranslation();
+  
   return (
     <Tab.Navigator
       initialRouteName="Dashboard"
@@ -53,22 +57,10 @@ const TabNavigator: React.FC = () => {
       }}
     >
       <Tab.Screen
-        name="Dashboard"
-        component={DashboardScreen}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon color={color} label="🏠" focused={focused} />
-          ),
-          tabBarAccessibilityLabel: 'Home Dashboard',
-          tabBarTestID: 'tab-home',
-        }}
-      />
-      <Tab.Screen
         name="AgricultureTab"
         component={AgricultureNavigator}
         options={{
-          tabBarLabel: 'Agriculture',
+          tabBarLabel: t('agriculture.title'),
           tabBarIcon: ({ color, focused }) => (
             <TabIcon color={color} label="🌾" focused={focused} />
           ),
@@ -80,7 +72,7 @@ const TabNavigator: React.FC = () => {
         name="HealthTab"
         component={HealthNavigator}
         options={{
-          tabBarLabel: 'Health',
+          tabBarLabel: t('health.title'),
           tabBarIcon: ({ color, focused }) => (
             <TabIcon color={color} label="🏥" focused={focused} />
           ),
@@ -89,10 +81,22 @@ const TabNavigator: React.FC = () => {
         }}
       />
       <Tab.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{
+          tabBarLabel: t('common.home'),
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon color={color} label="🏠" focused={focused} />
+          ),
+          tabBarAccessibilityLabel: 'Home Dashboard',
+          tabBarTestID: 'tab-home',
+        }}
+      />
+      <Tab.Screen
         name="EducationTab"
         component={EducationNavigator}
         options={{
-          tabBarLabel: 'Education',
+          tabBarLabel: t('education.title'),
           tabBarIcon: ({ color, focused }) => (
             <TabIcon color={color} label="📚" focused={focused} />
           ),
@@ -104,7 +108,7 @@ const TabNavigator: React.FC = () => {
         name="InfrastructureTab"
         component={InfrastructureNavigator}
         options={{
-          tabBarLabel: 'Civic',
+          tabBarLabel: t('infrastructure.title'),
           tabBarIcon: ({ color, focused }) => (
             <TabIcon color={color} label="🏛️" focused={focused} />
           ),
@@ -129,9 +133,9 @@ const MainNavigator: React.FC = () => {
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="AppSettings" component={AppSettingsScreen} />
       <Stack.Screen name="About" component={AboutScreen} />
+      <Stack.Screen name="LanguageSettings" component={LanguageSettingsScreen} />
       {/* Placeholder screens */}
       <Stack.Screen name="NotificationSettings" component={PlaceholderScreen} />
-      <Stack.Screen name="LanguageSettings" component={PlaceholderScreen} />
       <Stack.Screen name="AccessibilitySettings" component={PlaceholderScreen} />
       <Stack.Screen name="HelpSupport" component={PlaceholderScreen} />
     </Stack.Navigator>

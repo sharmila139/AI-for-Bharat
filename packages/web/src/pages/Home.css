@@ -181,3 +181,13 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+.button-success {
+  background: #10b981;
+  color: white;
+}
+
+.button-success:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}

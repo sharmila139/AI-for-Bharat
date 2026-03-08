@@ -173,22 +173,39 @@ const SoilAnalysisScreen: React.FC = () => {
       setAnalyzing(false);
 
       if (result.success) {
+        // Build analysis message from AI response
+        let analysisMessage = '';
+        
+        if (result.data?.analysis) {
+          const analysis = result.data.analysis;
+          
+          analysisMessage += `🌱 Soil Health: ${analysis.soilHealth || 'Unknown'}\n\n`;
+          
+          if (analysis.deficiencies && analysis.deficiencies.length > 0) {
+            analysisMessage += `⚠️ Deficiencies:\n${analysis.deficiencies.map(d => `  • ${d}`).join('\n')}\n\n`;
+          }
+          
+          if (analysis.recommendations && analysis.recommendations.length > 0) {
+            analysisMessage += `💡 Recommendations:\n`;
+            analysis.recommendations.slice(0, 3).forEach((rec, idx) => {
+              analysisMessage += `${idx + 1}. ${rec.action}\n`;
+            });
+            analysisMessage += '\n';
+          }
+          
+          if (analysis.fertilizerAdvice) {
+            analysisMessage += `🌾 Fertilizer Advice:\n${analysis.fertilizerAdvice.substring(0, 200)}${analysis.fertilizerAdvice.length > 200 ? '...' : ''}`;
+          }
+        } else {
+          // Fallback to basic info
+          analysisMessage = `Soil Type: ${result.data?.soilType}\nConfidence: ${(result.data?.confidence || 0) * 100}%`;
+        }
+        
         // Navigate to results screen
         Alert.alert(
-          'Analysis Complete',
-          `Soil analysis completed successfully!\n\n${
-            analysisType === 'photo'
-              ? `Soil Type: ${result.data?.soilType}\nConfidence: ${(result.data?.confidence || 0) * 100}%`
-              : 'Health card data extracted successfully'
-          }`,
+          '✅ Analysis Complete',
+          analysisMessage,
           [
-            {
-              text: 'View Details',
-              onPress: () => {
-                // TODO: Navigate to soil health report screen
-                console.log('Navigate to results:', result);
-              },
-            },
             {
               text: 'Analyze Another',
               onPress: () => {
@@ -196,7 +213,12 @@ const SoilAnalysisScreen: React.FC = () => {
                 setError(null);
               },
             },
-          ]
+            {
+              text: 'OK',
+              style: 'cancel',
+            },
+          ],
+          { cancelable: true }
         );
       } else {
         // Handle analysis failure

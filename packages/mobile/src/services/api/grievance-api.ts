@@ -1,12 +1,13 @@
 /**
  * Grievance API Service
- * Client-side API calls for infrastructure grievance reporting
+ * Client-side API calls for infrastructure grievance reporting with AWS Bedrock AI
  */
 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAuthToken } from '../auth/auth-service';
 import { API_BASE_URL } from '../../config/api-config';
+import bedrockService from '../aws/bedrock-service';
 
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api/infrastructure`,
@@ -204,67 +205,78 @@ export const submitGrievance = async (
 };
 
 /**
- * Get AI classification for a photo (preview before submission)
+ * Get AI classification for a photo (preview before submission) using AWS Bedrock
  */
 export const classifyGrievancePhoto = async (
   photoUri: string,
   description: string
 ): Promise<AIClassificationResult> => {
-  // Mock classification in development mode
-  if (__DEV__) {
-    console.log('DEV MODE: Mock AI classification');
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate AI processing
-    
-    // Simple keyword-based classification for demo
-    const lowerDesc = description.toLowerCase();
-    let category: GrievanceCategory = 'other';
-    let severity: SeverityLevel = 'medium';
-    let confidence = 75;
-    
-    if (lowerDesc.includes('road') || lowerDesc.includes('pothole') || lowerDesc.includes('street')) {
-      category = 'road';
-      confidence = 85;
-    } else if (lowerDesc.includes('water') || lowerDesc.includes('pipe') || lowerDesc.includes('leak')) {
-      category = 'water';
-      confidence = 80;
-    } else if (lowerDesc.includes('electricity') || lowerDesc.includes('power') || lowerDesc.includes('light')) {
-      category = 'electricity';
-      confidence = 82;
-    } else if (lowerDesc.includes('garbage') || lowerDesc.includes('waste') || lowerDesc.includes('sanitation')) {
-      category = 'sanitation';
-      confidence = 78;
-    }
-    
-    if (lowerDesc.includes('urgent') || lowerDesc.includes('dangerous') || lowerDesc.includes('critical')) {
-      severity = 'high';
-    }
-    
-    return {
-      category,
-      confidence,
-      severity,
-      keywords: lowerDesc.split(' ').slice(0, 5),
-    };
-  }
+  try {
+    // Build AI prompt
+    const bedrockRequest = bedrockService.buildGrievanceClassificationPrompt({
+      title: 'Grievance',
+      description,
+    });
 
-  const formData = new FormData();
-  
-  formData.append('photo', {
-    uri: photoUri,
-    type: 'image/jpeg',
-    name: 'preview.jpg',
-  } as any);
-  
-  formData.append('description', description);
-  
-  const response = await api.post('/grievances/classify', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-  
-  return response.data;
+    // Invoke Bedrock AI
+    const aiResponse = await bedrockService.invoke('grievance_classification', bedrockRequest);
+
+    if (aiResponse.success) {
+      // Parse AI response
+      const classification = JSON.parse(aiResponse.content);
+      
+      return {
+        category: classification.category || 'other',
+        confidence: classification.confidence || 0.75,
+        severity: classification.severity || 'medium',
+        keywords: classification.keywords || [],
+      };
+    }
+
+    // If AI failed, use keyword-based fallback
+    return classifyByKeywords(description);
+  } catch (error: any) {
+    console.error('Error classifying grievance:', error);
+    
+    // Fallback to keyword-based classification
+    return classifyByKeywords(description);
+  }
 };
+
+/**
+ * Keyword-based classification fallback
+ */
+function classifyByKeywords(description: string): AIClassificationResult {
+  const lowerDesc = description.toLowerCase();
+  let category: GrievanceCategory = 'other';
+  let severity: SeverityLevel = 'medium';
+  let confidence = 75;
+  
+  if (lowerDesc.includes('road') || lowerDesc.includes('pothole') || lowerDesc.includes('street')) {
+    category = 'road';
+    confidence = 85;
+  } else if (lowerDesc.includes('water') || lowerDesc.includes('pipe') || lowerDesc.includes('leak')) {
+    category = 'water';
+    confidence = 80;
+  } else if (lowerDesc.includes('electricity') || lowerDesc.includes('power') || lowerDesc.includes('light')) {
+    category = 'electricity';
+    confidence = 82;
+  } else if (lowerDesc.includes('garbage') || lowerDesc.includes('waste') || lowerDesc.includes('sanitation')) {
+    category = 'sanitation';
+    confidence = 78;
+  }
+  
+  if (lowerDesc.includes('urgent') || lowerDesc.includes('dangerous') || lowerDesc.includes('critical')) {
+    severity = 'high';
+  }
+  
+  return {
+    category,
+    confidence,
+    severity,
+    keywords: lowerDesc.split(' ').slice(0, 5),
+  };
+}
 
 /**
  * Check for duplicate grievances

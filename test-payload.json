@@ -1,0 +1,4 @@
+{
+  "httpMethod": "POST",
+  "body": "{\"modelId\":\"anthropic.claude-3-haiku-20240307-v1:0\",\"prompt\":\"Say hello in one sentence\",\"systemPrompt\":\"You are a helpful assistant\"}"
+}

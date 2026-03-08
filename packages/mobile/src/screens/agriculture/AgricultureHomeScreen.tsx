@@ -7,29 +7,31 @@ import {
   ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { AgricultureStackNavigationProp } from '../../navigation/types';
 
 const AgricultureHomeScreen: React.FC = () => {
   const navigation = useNavigation<AgricultureStackNavigationProp>();
+  const { t } = useTranslation();
 
   const features = [
     {
-      title: 'Crop Recommendation',
-      description: 'AI-powered crop suggestions based on your farm',
+      title: t('agriculture.crop_recommendation'),
+      description: t('agriculture.get_recommendations'),
       onPress: () => navigation.navigate('CropRecommendation'),
     },
     {
-      title: 'Soil Analysis',
-      description: 'Analyze soil health and get fertilizer recommendations',
+      title: t('agriculture.soil_analysis'),
+      description: t('agriculture.analyze_soil'),
       onPress: () => navigation.navigate('SoilAnalysis'),
     },
     {
-      title: 'Weather Dashboard',
-      description: 'Hyper-local weather forecasts and alerts',
+      title: t('agriculture.weather'),
+      description: t('agriculture.view_weather'),
       onPress: () => navigation.navigate('WeatherDashboard'),
     },
     {
-      title: 'Knowledge Base',
+      title: t('agriculture.knowledge_base'),
       description: 'Sustainable farming practices and techniques',
       onPress: () => navigation.navigate('KnowledgeBaseSearch'),
     },

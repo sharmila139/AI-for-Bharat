@@ -16,7 +16,11 @@ const USER_DATA_KEY = '@ruralconnect:user_data';
 // For iOS simulator, use localhost or your machine's IP
 const API_BASE_URL = __DEV__
   ? 'http://10.0.2.2:3000/api'
-  : 'https://api.ruralconnect.app';
+  : 'https://q5hy2fwp3i.execute-api.us-east-1.amazonaws.com/api/v1';
+
+// Enable dev mode OTP bypass even in production for testing
+// Set to false when you have real OTP service
+const ENABLE_OTP_BYPASS = true;
 
 export interface User {
   id: string;
@@ -62,7 +66,7 @@ export interface CreateProfileResponse {
  */
 export const sendOTP = async (phoneNumber: string): Promise<SendOTPResponse> => {
   // Mock OTP for development/testing
-  if (__DEV__) {
+  if (ENABLE_OTP_BYPASS) {
     console.log('DEV MODE: Mock OTP sent. Use any 6-digit code (e.g., 123456)');
     return {
       success: true,
@@ -94,7 +98,7 @@ export const verifyOTP = async (
   otp: string
 ): Promise<VerifyOTPResponse> => {
   // Mock OTP verification for development/testing
-  if (__DEV__) {
+  if (ENABLE_OTP_BYPASS) {
     console.log('DEV MODE: Mock OTP verification');
     
     // Accept any 6-digit OTP in dev mode

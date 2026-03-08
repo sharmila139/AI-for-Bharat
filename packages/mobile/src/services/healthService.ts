@@ -1,9 +1,10 @@
 /**
  * Health Service
- * API integration for symptom assessment and first aid
+ * API integration for symptom assessment and first aid with AWS Bedrock AI
  */
 
 import apiClient from './api/client';
+import bedrockService from './aws/bedrock-service';
 import {
   SymptomAssessmentInput,
   SymptomAssessmentResult,
@@ -38,20 +39,35 @@ interface SymptomCheckResponse {
 
 class HealthService {
   /**
-   * Check symptoms using simple text input (matching web app)
+   * Check symptoms using simple text input with AWS Bedrock AI
    */
   async checkSymptoms(symptoms: string): Promise<SymptomCheckResponse> {
     try {
-      const response = await apiClient.post<SymptomCheckResponse>(
-        '/api/health/symptom-check',
-        { symptoms }
-      );
+      // Build AI prompt
+      const bedrockRequest = bedrockService.buildHealthAssessmentPrompt({
+        symptoms,
+      });
 
-      if (response.success && response.data) {
-        return response.data;
+      // Invoke Bedrock AI
+      const aiResponse = await bedrockService.invoke('health_assessment', bedrockRequest);
+
+      if (aiResponse.success) {
+        // Parse AI response
+        const assessment = JSON.parse(aiResponse.content);
+        
+        return {
+          assessment: {
+            severity: assessment.severity || 'Moderate',
+            possibleConditions: assessment.possibleConditions || [],
+            firstAidSteps: assessment.firstAidSteps || [],
+            seekHelpIf: assessment.seekHelpIf || 'Symptoms worsen or persist',
+            recommendedRemedies: assessment.recommendedRemedies || [],
+          },
+        };
       }
 
-      throw new Error(response.error || 'Failed to check symptoms');
+      // If AI failed, use fallback
+      return this.getOfflineSymptomCheck(symptoms);
     } catch (error: any) {
       console.error('Error checking symptoms:', error);
       

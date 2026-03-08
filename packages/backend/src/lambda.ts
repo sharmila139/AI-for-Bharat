@@ -13,6 +13,7 @@ import authRoutes from './api/auth';
 import healthRoutes from './api/health';
 import cropRecommendationRoutes from './api/crop-recommendation';
 import soilAnalysisRoutes from './api/soil-analysis';
+import aiRoutes from './api/ai';
 
 // Create Express app
 const app = express();
@@ -37,6 +38,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/api/agriculture/crop-recommendations', cropRecommendationRoutes);
 app.use('/api/agriculture/soil-analysis', soilAnalysisRoutes);
+app.use('/api/v1/ai', aiRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: any) => {

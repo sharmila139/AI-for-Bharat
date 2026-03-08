@@ -10,6 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { logout } from '../services/auth/auth-service';
 
 interface SettingsItemProps {
@@ -53,18 +54,19 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
 
 const SettingsScreen: React.FC = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   const handleLogout = () => {
     Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
+      t('settings.logout'),
+      t('settings.logout_confirm'),
       [
         {
-          text: 'Cancel',
+          text: t('common.cancel'),
           style: 'cancel',
         },
         {
-          text: 'Logout',
+          text: t('settings.logout'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -72,7 +74,7 @@ const SettingsScreen: React.FC = () => {
               // Navigation will be handled by RootNavigator
             } catch (error) {
               console.error('Error during logout:', error);
-              Alert.alert('Error', 'Failed to logout. Please try again.');
+              Alert.alert(t('common.error'), t('settings.logout_error'));
             }
           },
         },
@@ -86,25 +88,32 @@ const SettingsScreen: React.FC = () => {
       
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Settings</Text>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Text style={styles.backIcon}>‹</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{t('settings.title')}</Text>
+        <View style={styles.placeholder} />
       </View>
 
       <ScrollView style={styles.scrollView}>
         {/* Account Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>ACCOUNT</Text>
+          <Text style={styles.sectionTitle}>{t('settings.account')}</Text>
           <View style={styles.sectionContent}>
             <SettingsItem
               icon="👤"
-              title="Profile"
-              subtitle="Manage your personal information"
+              title={t('settings.profile')}
+              subtitle={t('settings.profile_subtitle')}
               onPress={() => navigation.navigate('Profile' as never)}
             />
             <View style={styles.divider} />
             <SettingsItem
               icon="🔔"
-              title="Notifications"
-              subtitle="Manage notification preferences"
+              title={t('settings.notifications')}
+              subtitle={t('settings.notifications_subtitle')}
               onPress={() => navigation.navigate('NotificationSettings' as never)}
             />
           </View>
@@ -112,26 +121,26 @@ const SettingsScreen: React.FC = () => {
 
         {/* App Settings Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>APP SETTINGS</Text>
+          <Text style={styles.sectionTitle}>{t('settings.app_settings')}</Text>
           <View style={styles.sectionContent}>
             <SettingsItem
               icon="🌐"
-              title="Language"
-              subtitle="Change app language"
+              title={t('settings.language')}
+              subtitle={t('settings.language_subtitle')}
               onPress={() => navigation.navigate('LanguageSettings' as never)}
             />
             <View style={styles.divider} />
             <SettingsItem
               icon="♿"
-              title="Accessibility"
-              subtitle="Font size, contrast, voice"
+              title={t('settings.accessibility')}
+              subtitle={t('settings.accessibility_subtitle')}
               onPress={() => navigation.navigate('AccessibilitySettings' as never)}
             />
             <View style={styles.divider} />
             <SettingsItem
               icon="📱"
-              title="App Settings"
-              subtitle="Offline mode, cache, storage"
+              title={t('settings.app_settings')}
+              subtitle={t('settings.app_settings_subtitle')}
               onPress={() => navigation.navigate('AppSettings' as never)}
             />
           </View>
@@ -139,19 +148,19 @@ const SettingsScreen: React.FC = () => {
 
         {/* About Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>ABOUT</Text>
+          <Text style={styles.sectionTitle}>{t('settings.about')}</Text>
           <View style={styles.sectionContent}>
             <SettingsItem
               icon="ℹ️"
-              title="About RuralConnect AI"
-              subtitle="Version, terms, privacy"
+              title={t('settings.about_app')}
+              subtitle={t('settings.about_app_subtitle')}
               onPress={() => navigation.navigate('About' as never)}
             />
             <View style={styles.divider} />
             <SettingsItem
               icon="📞"
-              title="Help & Support"
-              subtitle="Get help and contact us"
+              title={t('settings.help_support')}
+              subtitle={t('settings.help_support_subtitle')}
               onPress={() => navigation.navigate('HelpSupport' as never)}
             />
           </View>
@@ -165,14 +174,14 @@ const SettingsScreen: React.FC = () => {
             activeOpacity={0.7}
           >
             <Text style={styles.logoutIcon}>🚪</Text>
-            <Text style={styles.logoutText}>Logout</Text>
+            <Text style={styles.logoutText}>{t('settings.logout')}</Text>
           </TouchableOpacity>
         </View>
 
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Made with ❤️ for Rural India
+            {t('settings.footer')}
           </Text>
         </View>
       </ScrollView>
@@ -187,14 +196,30 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#ffffff',
-    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
   },
+  backButton: {
+    padding: 4,
+    width: 40,
+  },
+  backIcon: {
+    fontSize: 32,
+    color: '#333',
+  },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
+    flex: 1,
+    textAlign: 'center',
+  },
+  placeholder: {
+    width: 40,
   },
   scrollView: {
     flex: 1,

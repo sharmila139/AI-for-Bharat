@@ -10,6 +10,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { MainTabNavigationProp } from '../navigation/types';
 import { getUserData, User } from '../services/auth/auth-service';
 import OfflineIndicator from '../components/OfflineIndicator';
@@ -50,6 +51,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
 
 const DashboardScreen: React.FC = () => {
   const navigation = useNavigation<MainTabNavigationProp>();
+  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -74,36 +76,36 @@ const DashboardScreen: React.FC = () => {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hour < 12) return t('common.good_morning');
+    if (hour < 17) return t('common.good_afternoon');
+    return t('common.good_evening');
   };
 
   const modules = [
     {
-      title: 'Agriculture',
-      description: 'Crop recommendations, soil analysis, weather alerts',
+      title: t('agriculture.title'),
+      description: t('agriculture.description'),
       icon: '🌾',
       color: '#4CAF50',
       onPress: () => navigation.navigate('AgricultureTab', { screen: 'AgricultureHome' }),
     },
     {
-      title: 'Health',
-      description: 'First aid, natural remedies, nutrition tracking',
+      title: t('health.title'),
+      description: t('health.description'),
       icon: '🏥',
       color: '#2196F3',
       onPress: () => navigation.navigate('HealthTab', { screen: 'HealthHome' }),
     },
     {
-      title: 'Education',
-      description: 'Learning content, videos, progress tracking',
+      title: t('education.title'),
+      description: t('education.description'),
       icon: '📚',
       color: '#FF9800',
       onPress: () => navigation.navigate('EducationTab', { screen: 'EducationHome' }),
     },
     {
-      title: 'Infrastructure',
-      description: 'Report issues, community polls, project tracking',
+      title: t('infrastructure.title'),
+      description: t('infrastructure.description'),
       icon: '🏛️',
       color: '#9C27B0',
       onPress: () => navigation.navigate('InfrastructureTab', { screen: 'InfrastructureHome' }),
@@ -129,7 +131,7 @@ const DashboardScreen: React.FC = () => {
           <View style={styles.greetingContainer}>
             <Text style={styles.greeting}>{getGreeting()}!</Text>
             <Text style={styles.userName}>
-              {user?.name || 'Welcome'}
+              {user?.name || t('common.welcome')}
             </Text>
             {user?.village && (
               <View style={styles.locationContainer}>
@@ -149,7 +151,7 @@ const DashboardScreen: React.FC = () => {
 
         {/* Module Cards */}
         <View style={styles.modulesContainer}>
-          <Text style={styles.sectionTitle}>Explore Modules</Text>
+          <Text style={styles.sectionTitle}>{t('dashboard.explore_modules')}</Text>
           {modules.map((module, index) => (
             <ModuleCard
               key={index}
@@ -164,23 +166,23 @@ const DashboardScreen: React.FC = () => {
 
         {/* Quick Stats Section */}
         <View style={styles.statsContainer}>
-          <Text style={styles.sectionTitle}>Quick Stats</Text>
+          <Text style={styles.sectionTitle}>{t('dashboard.quick_stats')}</Text>
           <View style={styles.statsGrid}>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>0</Text>
-              <Text style={styles.statLabel}>Weather Alerts</Text>
+              <Text style={styles.statLabel}>{t('dashboard.weather_alerts')}</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>0</Text>
-              <Text style={styles.statLabel}>Active Issues</Text>
+              <Text style={styles.statLabel}>{t('dashboard.active_issues')}</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>0</Text>
-              <Text style={styles.statLabel}>Learning Hours</Text>
+              <Text style={styles.statLabel}>{t('dashboard.learning_hours')}</Text>
             </View>
             <View style={styles.statCard}>
               <Text style={styles.statValue}>0</Text>
-              <Text style={styles.statLabel}>Health Tips</Text>
+              <Text style={styles.statLabel}>{t('dashboard.health_tips')}</Text>
             </View>
           </View>
         </View>
@@ -188,7 +190,7 @@ const DashboardScreen: React.FC = () => {
         {/* Help Section */}
         <View style={styles.helpContainer}>
           <Text style={styles.helpText}>
-            Need help? Tap on any module to get started or use the voice assistant.
+            {t('dashboard.help_text')}
           </Text>
         </View>
       </ScrollView>

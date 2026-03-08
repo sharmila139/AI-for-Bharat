@@ -7,10 +7,12 @@ import {
   ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { EducationStackNavigationProp } from '../../navigation/types';
 
 const EducationHomeScreen: React.FC = () => {
   const navigation = useNavigation<EducationStackNavigationProp>();
+  const { t } = useTranslation();
 
   const features = [
     {
@@ -26,13 +28,13 @@ const EducationHomeScreen: React.FC = () => {
       }),
     },
     {
-      title: 'Content Library',
+      title: t('education.content_library'),
       description: 'Curriculum-aligned educational videos and lessons',
       onPress: () => navigation.navigate('ContentLibrary'),
     },
     {
-      title: 'My Progress',
-      description: 'Track your learning journey and achievements',
+      title: t('education.my_progress'),
+      description: t('education.in_progress'),
       onPress: () => navigation.navigate('Progress'),
     },
   ];

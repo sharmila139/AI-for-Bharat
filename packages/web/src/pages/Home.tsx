@@ -55,6 +55,9 @@ export default function Home() {
               <Link to="/agriculture" className="button button-primary button-large">
                 Get Started
               </Link>
+              <a href="/RuralConnect-AI-v1.1.1.apk" download className="button button-success button-large">
+                📱 Download Android App
+              </a>
               <a href="#features" className="button button-secondary button-large">
                 Learn More
               </a>
@@ -106,6 +109,27 @@ export default function Home() {
       </section>
 
       <section className="cta-section">
+        <div className="container">
+          <div className="cta-content">
+            <h2 className="cta-title">Download Our Mobile App</h2>
+            <p className="cta-subtitle">
+              Get the full RuralConnect AI experience on your Android device
+            </p>
+            <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+              <a href="/RuralConnect-AI-v1.1.1.apk" download className="button button-success button-large">
+                📱 Download Android App (v1.1.1)
+              </a>
+              <p style={{ fontSize: '0.875rem', color: '#6b7280', textAlign: 'center' }}>
+                ✨ Features: AI-powered soil analysis, crop recommendations, health assistance, and more<br/>
+                🌍 Multi-language support: English, Hindi, Telugu<br/>
+                📦 Size: 63 MB | Version: 1.1.1 | Login: Use any number + OTP: 123456
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="cta-section" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
         <div className="container">
           <div className="cta-content">
             <h2 className="cta-title">Ready to Get Started?</h2>

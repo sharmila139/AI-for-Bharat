@@ -1,32 +1,64 @@
 /**
  * Crop Recommendation Service
- * Handles API calls for crop recommendations
+ * Handles API calls for crop recommendations with AWS Bedrock AI
  */
 
 import apiClient from './api/client';
+import bedrockService from './aws/bedrock-service';
 import { CropRecommendationInput, CropRecommendationResponse } from '../types/cropRecommendation';
 
 class CropRecommendationService {
   /**
-   * Get crop recommendations based on farm conditions
+   * Get crop recommendations based on farm conditions using AWS Bedrock AI
    */
   async getCropRecommendations(
     input: CropRecommendationInput
   ): Promise<CropRecommendationResponse> {
     try {
-      const response = await apiClient.post<CropRecommendationResponse>(
-        '/api/agriculture/crop-recommendations',
-        input
-      );
+      // Build AI prompt
+      const bedrockRequest = bedrockService.buildCropRecommendationPrompt({
+        location: input.location,
+        soilType: input.soilType,
+        season: input.season,
+        previousCrops: input.previousCrops,
+        farmSize: input.farmSize,
+        irrigationAvailable: input.irrigationAvailable,
+      });
 
-      if (response.success && response.data) {
-        return response.data;
+      // Invoke Bedrock AI
+      const aiResponse = await bedrockService.invoke('crop_recommendation', bedrockRequest);
+
+      if (aiResponse.success) {
+        // Parse AI response
+        const recommendations = JSON.parse(aiResponse.content);
+        
+        return {
+          success: true,
+          recommendations: recommendations.recommendations || [],
+          additionalAdvice: recommendations.additionalAdvice,
+          aiModel: aiResponse.model,
+          fallbackUsed: aiResponse.fallbackUsed,
+        };
       }
 
-      throw new Error(response.error || 'Failed to get crop recommendations');
+      // If AI failed, return fallback response
+      const fallbackData = JSON.parse(aiResponse.content);
+      return {
+        success: false,
+        recommendations: fallbackData.recommendations || [],
+        error: aiResponse.error,
+        note: fallbackData.note,
+      };
     } catch (error: any) {
       console.error('Error getting crop recommendations:', error);
-      throw new Error(error.message || 'Failed to get crop recommendations');
+      
+      // Return basic fallback
+      return {
+        success: false,
+        recommendations: [],
+        error: error.message || 'Failed to get crop recommendations',
+        note: 'Please consult local agricultural extension officers for recommendations.',
+      };
     }
   }
 

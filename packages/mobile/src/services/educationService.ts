@@ -1,9 +1,10 @@
 /**
  * Education Service
- * API integration for student profiles, diagnostic assessments, and knowledge tracking
+ * API integration for student profiles, diagnostic assessments, and knowledge tracking with AWS Bedrock AI
  */
 
 import apiClient from '../config/api';
+import bedrockService from './aws/bedrock-service';
 import {
   StudentProfile,
   StudentProfileInput,
@@ -269,18 +270,45 @@ class EducationService {
   }
 
   /**
-   * Get content recommendations based on knowledge state
+   * Get content recommendations based on knowledge state using AWS Bedrock AI
    */
   async getContentRecommendations(studentId: string): Promise<ContentRecommendation[]> {
     try {
-      const response = await apiClient.get<ApiResponse<ContentRecommendation[]>>(
-        `/education/content/recommendations/${studentId}`
-      );
-
-      if (response.data.success && response.data.data) {
-        return response.data.data;
+      // Get student profile first
+      const profile = await this.getStudentProfile(studentId);
+      
+      if (!profile) {
+        return [];
       }
 
+      // Build AI prompt for recommendations
+      const bedrockRequest = bedrockService.buildEducationRecommendationPrompt({
+        studentId,
+        gradeLevel: profile.gradeLevel,
+        subject: profile.preferredSubject,
+        learningStyle: profile.learningStyle,
+        interests: profile.interests,
+      });
+
+      // Invoke Bedrock AI
+      const aiResponse = await bedrockService.invoke('education_recommendation', bedrockRequest);
+
+      if (aiResponse.success) {
+        // Parse AI response
+        const recommendations = JSON.parse(aiResponse.content);
+        
+        // Convert to ContentRecommendation format
+        return (recommendations.recommendations || []).map((rec: any, index: number) => ({
+          contentId: `ai-rec-${index}`,
+          title: rec.title,
+          reason: rec.reason,
+          priority: rec.priority || 'medium',
+          estimatedTime: rec.estimatedTime,
+          difficulty: rec.difficulty,
+        }));
+      }
+
+      // Fallback to basic recommendations
       return [];
     } catch (error: any) {
       console.error('Error fetching content recommendations:', error);

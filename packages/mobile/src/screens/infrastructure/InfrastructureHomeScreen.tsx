@@ -7,29 +7,31 @@ import {
   ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { InfrastructureStackNavigationProp } from '../../navigation/types';
 
 const InfrastructureHomeScreen: React.FC = () => {
   const navigation = useNavigation<InfrastructureStackNavigationProp>();
+  const { t } = useTranslation();
 
   const features = [
     {
-      title: 'Report Grievance',
-      description: 'Report infrastructure issues with photos',
+      title: t('infrastructure.report_grievance'),
+      description: t('infrastructure.add_photos'),
       onPress: () => navigation.navigate('GrievanceReport'),
     },
     {
-      title: 'Track Grievances',
-      description: 'Monitor status of reported issues',
+      title: t('infrastructure.track_grievances'),
+      description: t('infrastructure.track_progress'),
       onPress: () => navigation.navigate('GrievanceList'),
     },
     {
-      title: 'Community Polls',
-      description: 'Participate in local decision-making',
+      title: t('infrastructure.community_polls'),
+      description: t('infrastructure.vote'),
       onPress: () => navigation.navigate('CommunityPolls'),
     },
     {
-      title: 'Project Progress',
+      title: t('infrastructure.project_progress'),
       description: 'Track infrastructure project development',
       onPress: () => navigation.navigate('ProjectProgress'),
     },

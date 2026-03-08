@@ -4,6 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+// Initialize i18n
+import './src/i18n';
+
 import { RootNavigator } from './src/navigation';
 import { ErrorBoundary } from './src/components';
 // import { AccessibilityProvider } from './src/contexts/AccessibilityContext';

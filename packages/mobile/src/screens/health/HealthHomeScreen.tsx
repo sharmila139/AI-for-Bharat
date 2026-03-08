@@ -7,39 +7,41 @@ import {
   ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { HealthStackNavigationProp } from '../../navigation/types';
 
 const HealthHomeScreen: React.FC = () => {
   const navigation = useNavigation<HealthStackNavigationProp>();
+  const { t } = useTranslation();
 
   const features = [
     {
-      title: 'Symptom Assessment',
-      description: 'Get AI-powered health assessment and first aid guidance',
+      title: t('health.symptom_checker'),
+      description: t('health.enter_symptoms'),
       icon: '🩺',
       onPress: () => navigation.navigate('SymptomInput'),
     },
     {
-      title: 'First Aid Assistant',
+      title: t('health.first_aid'),
       description: 'AI-guided emergency first aid instructions',
       icon: '🚑',
       onPress: () => navigation.navigate('FirstAid'),
     },
     {
-      title: 'Emergency Contacts',
+      title: t('health.emergency'),
       description: 'Manage emergency contacts for quick access',
       icon: '📞',
       onPress: () => navigation.navigate('EmergencyContacts'),
     },
     {
-      title: 'Natural Remedies',
-      description: 'Verified traditional medicine database',
+      title: t('health.remedies'),
+      description: t('health.recommended_remedies'),
       icon: '🌿',
       onPress: () => navigation.navigate('RemedySearch'),
     },
     {
-      title: 'Nutrition Tracking',
-      description: 'Personalized meal plans and nutrition guidance',
+      title: t('health.nutrition'),
+      description: t('health.meal_plan'),
       icon: '🥗',
       onPress: () => navigation.navigate('NutritionTracking'),
     },
