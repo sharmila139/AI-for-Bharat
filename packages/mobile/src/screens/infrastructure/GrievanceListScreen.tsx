@@ -77,7 +77,7 @@ export const GrievanceListScreen: React.FC<GrievanceListScreenProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<GrievanceCategory | undefined>();
   const [startDate, setStartDate] = useState<string | undefined>();
   const [endDate, setEndDate] = useState<string | undefined>();
-  const [myGrievancesOnly, setMyGrievancesOnly] = useState(false);
+  const [myGrievancesOnly, setMyGrievancesOnly] = useState(true); // Default to true
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -172,7 +172,7 @@ export const GrievanceListScreen: React.FC<GrievanceListScreenProps> = ({
   };
 
   const handleGrievancePress = (grievance: GrievanceListItem) => {
-    navigation.navigate('GrievanceDetail', {
+    navigation.navigate('GrievanceTracking', {
       grievanceId: grievance.grievanceId,
       ticketNumber: grievance.ticketNumber,
     });

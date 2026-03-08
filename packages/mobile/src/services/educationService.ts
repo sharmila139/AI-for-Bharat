@@ -632,15 +632,15 @@ class EducationService {
     let filtered = sampleContent;
     
     if (params.query && params.query.trim()) {
-      const query = params.query.toLowerCase();
+      const query = (params.query || '').toLowerCase();
       filtered = filtered.filter(item => {
-        const title = item.title || '';
-        const description = item.description || '';
-        const topic = item.topic || '';
+        const title = (item.title || '').toLowerCase();
+        const description = (item.description || '').toLowerCase();
+        const topic = (item.topic || '').toLowerCase();
         return (
-          title.toLowerCase().includes(query) ||
-          description.toLowerCase().includes(query) ||
-          topic.toLowerCase().includes(query)
+          title.includes(query) ||
+          description.includes(query) ||
+          topic.includes(query)
         );
       });
     }

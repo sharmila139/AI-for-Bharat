@@ -5,6 +5,7 @@ import { InfrastructureStackParamList } from './types';
 // Import screens
 import InfrastructureHomeScreen from '../screens/infrastructure/InfrastructureHomeScreen';
 import GrievanceReportScreen from '../screens/infrastructure/GrievanceReportScreen';
+import GrievanceListScreen from '../screens/infrastructure/GrievanceListScreen';
 import GrievanceTrackingScreen from '../screens/infrastructure/GrievanceTrackingScreen';
 import GrievanceDetailScreen from '../screens/infrastructure/GrievanceDetailScreen';
 import CommunityPollsScreen from '../screens/infrastructure/CommunityPollsScreen';
@@ -38,9 +39,14 @@ const InfrastructureNavigator: React.FC = () => {
         options={{ title: 'Report Grievance' }}
       />
       <Stack.Screen
+        name="GrievanceList"
+        component={GrievanceListScreen}
+        options={{ title: 'My Grievances' }}
+      />
+      <Stack.Screen
         name="GrievanceTracking"
         component={GrievanceTrackingScreen}
-        options={{ title: 'Track Grievances' }}
+        options={{ title: 'Track Grievance' }}
       />
       <Stack.Screen
         name="GrievanceDetail"

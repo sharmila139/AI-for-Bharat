@@ -39,13 +39,6 @@ const EducationHomeScreen: React.FC = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Education & Skills</Text>
-        <Text style={styles.subtitle}>
-          Adaptive learning for everyone
-        </Text>
-      </View>
-
       <View style={styles.featuresContainer}>
         {features.map((feature, index) => (
           <TouchableOpacity
@@ -67,33 +60,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
-  header: {
-    padding: 20,
-    backgroundColor: '#FF9800',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#ffffff',
-    opacity: 0.9,
-  },
   featuresContainer: {
     padding: 16,
+    paddingTop: 20,
   },
   featureCard: {
     backgroundColor: '#ffffff',
     borderRadius: 12,
     padding: 20,
     marginBottom: 16,
-    elevation: 2,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 4,
   },
   featureTitle: {

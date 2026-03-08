@@ -4,6 +4,7 @@
  */
 
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAuthToken } from '../auth/auth-service';
 import { API_BASE_URL } from '../../config/api-config';
 
@@ -109,18 +110,43 @@ export const submitGrievance = async (
     console.log('DEV MODE: Mock grievance submission');
     await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
     
-    const ticketNumber = `GRV${Date.now().toString().slice(-8)}`;
-    return {
-      grievanceId: `grv_${Date.now()}`,
+    const timestamp = Date.now();
+    const ticketNumber = `GRV${timestamp.toString().slice(-8)}`;
+    const grievanceId = `grv_${timestamp}`;
+    
+    const result: GrievanceSubmissionResult = {
+      grievanceId,
       ticketNumber,
       category: input.category || 'other',
       severity: 'medium',
       assignedAuthority: 'Municipal Corporation',
-      slaDeadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      slaDeadline: new Date(timestamp + 7 * 24 * 60 * 60 * 1000).toISOString(),
       isDuplicate: false,
       photoUrls: input.photos.map(p => p.uri),
       estimatedResolutionDays: 7,
     };
+    
+    // Store grievance locally for tracking
+    await storeGrievanceLocally({
+      grievanceId,
+      ticketNumber,
+      title: input.title,
+      description: input.description,
+      category: input.category || 'other',
+      status: 'submitted',
+      severity: 'medium',
+      location: input.location,
+      address: input.address,
+      photos: input.photos.map(p => p.uri),
+      createdAt: new Date(timestamp).toISOString(),
+      updatedAt: new Date(timestamp).toISOString(),
+      slaDeadline: result.slaDeadline,
+      isOverdue: false,
+      daysOpen: 0,
+      isAnonymous: input.isAnonymous || false,
+    });
+    
+    return result;
   }
 
   const formData = new FormData();
@@ -336,13 +362,46 @@ export const searchGrievances = async (
     console.log('DEV MODE: Mock grievance search');
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Return empty list for "my grievances" to show empty state
+    // Return stored grievances for "my grievances"
     if (params.myGrievances) {
+      const storedGrievances = await getStoredGrievances();
+      
+      // Apply filters
+      let filtered = storedGrievances;
+      
+      if (params.status) {
+        filtered = filtered.filter(g => g.status === params.status);
+      }
+      
+      if (params.category) {
+        filtered = filtered.filter(g => g.category === params.category);
+      }
+      
+      if (params.query) {
+        const query = params.query.toLowerCase();
+        filtered = filtered.filter(g => 
+          g.ticketNumber.toLowerCase().includes(query) ||
+          g.title.toLowerCase().includes(query) ||
+          g.description.toLowerCase().includes(query)
+        );
+      }
+      
+      // Update days open for each grievance
+      filtered = filtered.map(g => {
+        const createdDate = new Date(g.createdAt);
+        const now = new Date();
+        const daysOpen = Math.floor((now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+        return { ...g, daysOpen };
+      });
+      
+      // Sort by most recent first
+      filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      
       return {
-        items: [],
-        total: 0,
+        items: filtered,
+        total: filtered.length,
         page: 1,
-        totalPages: 0,
+        totalPages: filtered.length > 0 ? 1 : 0,
         hasMore: false,
       };
     }
@@ -460,6 +519,71 @@ export const verifyResolution = async (
   return response.data;
 };
 
+// ============================================================================
+// LOCAL STORAGE HELPERS
+// ============================================================================
+
+const GRIEVANCES_STORAGE_KEY = '@grievances_local';
+
+/**
+ * Store grievance locally for offline access and tracking
+ */
+const storeGrievanceLocally = async (grievance: GrievanceListItem): Promise<void> => {
+  try {
+    const stored = await AsyncStorage.getItem(GRIEVANCES_STORAGE_KEY);
+    const grievances: GrievanceListItem[] = stored ? JSON.parse(stored) : [];
+    
+    // Add new grievance at the beginning
+    grievances.unshift(grievance);
+    
+    // Keep only last 50 grievances
+    const limited = grievances.slice(0, 50);
+    
+    await AsyncStorage.setItem(GRIEVANCES_STORAGE_KEY, JSON.stringify(limited));
+    console.log('Grievance stored locally:', grievance.ticketNumber);
+  } catch (error) {
+    console.error('Error storing grievance locally:', error);
+  }
+};
+
+/**
+ * Get all stored grievances
+ */
+const getStoredGrievances = async (): Promise<GrievanceListItem[]> => {
+  try {
+    const stored = await AsyncStorage.getItem(GRIEVANCES_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error('Error getting stored grievances:', error);
+    return [];
+  }
+};
+
+/**
+ * Get grievance by ticket number from local storage
+ */
+export const getStoredGrievanceByTicket = async (ticketNumber: string): Promise<GrievanceListItem | null> => {
+  try {
+    const grievances = await getStoredGrievances();
+    return grievances.find(g => g.ticketNumber === ticketNumber) || null;
+  } catch (error) {
+    console.error('Error getting grievance by ticket:', error);
+    return null;
+  }
+};
+
+/**
+ * Clear all stored grievances (for testing)
+ */
+export const clearStoredGrievances = async (): Promise<void> => {
+  try {
+    await AsyncStorage.removeItem(GRIEVANCES_STORAGE_KEY);
+    console.log('Stored grievances cleared');
+  } catch (error) {
+    console.error('Error clearing stored grievances:', error);
+  }
+};
+
 export default {
   submitGrievance,
   classifyGrievancePhoto,
@@ -469,4 +593,6 @@ export default {
   searchGrievances,
   getGrievanceUpdates,
   verifyResolution,
+  getStoredGrievanceByTicket,
+  clearStoredGrievances,
 };

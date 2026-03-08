@@ -26,6 +26,7 @@ import {
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getStoredGrievanceByTicket } from '../../services/api/grievance-api';
 
 // ============================================================================
 // TYPES
@@ -109,54 +110,126 @@ const GrievanceTrackingScreen: React.FC = () => {
 
       // Mock data in development mode
       if (__DEV__) {
-        console.log('DEV MODE: Mock grievance details');
+        console.log('DEV MODE: Loading grievance details for:', grievanceId);
         await new Promise(resolve => setTimeout(resolve, 500));
         
-        // Mock grievance data
-        const mockGrievance: GrievanceDetails = {
-          grievance_id: grievanceId,
-          ticket_number: grievanceId.startsWith('GRV') ? grievanceId : `GRV${grievanceId.slice(-8)}`,
-          title: 'Sample Grievance',
-          description: 'This is a sample grievance for testing',
-          category: 'road',
-          status: 'in_progress',
-          ai_severity: 'medium',
-          created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-          is_overdue: false,
-          days_open: 3,
-          sla_deadline: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString(),
-          community_verified: false,
-          verification_votes_yes: 5,
-          verification_votes_no: 1,
-          verification_threshold: 10,
-        };
+        // Try to get from local storage first
+        const storedGrievance = await getStoredGrievanceByTicket(grievanceId);
         
-        const mockTimeline: TimelineEntry[] = [
-          {
-            update_id: '1',
-            update_type: 'status_change',
-            update_text: 'Grievance submitted',
-            is_public: true,
+        if (storedGrievance) {
+          console.log('Found stored grievance:', storedGrievance.ticketNumber);
+          
+          // Convert stored grievance to full details
+          const mockGrievance: GrievanceDetails = {
+            grievance_id: storedGrievance.grievanceId,
+            ticket_number: storedGrievance.ticketNumber,
+            title: storedGrievance.title,
+            description: storedGrievance.description,
+            category: storedGrievance.category,
+            status: storedGrievance.status,
+            ai_severity: storedGrievance.severity,
+            created_at: storedGrievance.createdAt,
+            is_overdue: storedGrievance.isOverdue,
+            days_open: storedGrievance.daysOpen,
+            sla_deadline: storedGrievance.slaDeadline,
+            community_verified: false,
+            verification_votes_yes: 0,
+            verification_votes_no: 0,
+            verification_threshold: 10,
+          };
+          
+          const mockTimeline: TimelineEntry[] = [
+            {
+              update_id: '1',
+              update_type: 'status_change',
+              update_text: 'Grievance submitted successfully',
+              is_public: true,
+              created_at: storedGrievance.createdAt,
+            },
+          ];
+          
+          // Add more timeline entries based on status
+          if (storedGrievance.status !== 'submitted') {
+            mockTimeline.push({
+              update_id: '2',
+              update_type: 'status_change',
+              update_text: 'Grievance acknowledged by authorities',
+              is_public: true,
+              created_at: new Date(new Date(storedGrievance.createdAt).getTime() + 24 * 60 * 60 * 1000).toISOString(),
+            });
+          }
+          
+          if (storedGrievance.status === 'in_progress' || storedGrievance.status === 'resolved') {
+            mockTimeline.push({
+              update_id: '3',
+              update_type: 'status_change',
+              update_text: 'Work in progress',
+              is_public: true,
+              created_at: new Date(new Date(storedGrievance.createdAt).getTime() + 48 * 60 * 60 * 1000).toISOString(),
+            });
+          }
+          
+          if (storedGrievance.status === 'resolved') {
+            mockTimeline.push({
+              update_id: '4',
+              update_type: 'resolution',
+              update_text: 'Issue has been resolved',
+              is_public: true,
+              created_at: new Date(new Date(storedGrievance.createdAt).getTime() + 72 * 60 * 60 * 1000).toISOString(),
+            });
+          }
+          
+          setGrievance(mockGrievance);
+          setTimeline(mockTimeline);
+        } else {
+          // Fallback to sample data if not found in storage
+          console.log('Grievance not found in storage, using sample data');
+          const mockGrievance: GrievanceDetails = {
+            grievance_id: grievanceId,
+            ticket_number: grievanceId.startsWith('GRV') ? grievanceId : `GRV${grievanceId.slice(-8)}`,
+            title: 'Sample Grievance',
+            description: 'This is a sample grievance for testing',
+            category: 'road',
+            status: 'in_progress',
+            ai_severity: 'medium',
             created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-          },
-          {
-            update_id: '2',
-            update_type: 'status_change',
-            update_text: 'Grievance acknowledged by authorities',
-            is_public: true,
-            created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          },
-          {
-            update_id: '3',
-            update_type: 'status_change',
-            update_text: 'Work in progress',
-            is_public: true,
-            created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-          },
-        ];
+            is_overdue: false,
+            days_open: 3,
+            sla_deadline: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString(),
+            community_verified: false,
+            verification_votes_yes: 5,
+            verification_votes_no: 1,
+            verification_threshold: 10,
+          };
+          
+          const mockTimeline: TimelineEntry[] = [
+            {
+              update_id: '1',
+              update_type: 'status_change',
+              update_text: 'Grievance submitted',
+              is_public: true,
+              created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+            },
+            {
+              update_id: '2',
+              update_type: 'status_change',
+              update_text: 'Grievance acknowledged by authorities',
+              is_public: true,
+              created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            },
+            {
+              update_id: '3',
+              update_type: 'status_change',
+              update_text: 'Work in progress',
+              is_public: true,
+              created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            },
+          ];
+          
+          setGrievance(mockGrievance);
+          setTimeline(mockTimeline);
+        }
         
-        setGrievance(mockGrievance);
-        setTimeline(mockTimeline);
         setLoading(false);
         setRefreshing(false);
         return;
